@@ -1,0 +1,37 @@
+# Latest content plugin template configuration
+plugin.tx_ywcontentautomation_latestcontent {
+  view {
+    templateRootPaths.10 = EXT:yw_contentautomation/Resources/Private/Templates/
+    partialRootPaths.10 = EXT:yw_contentautomation/Resources/Private/Partials/
+    layoutRootPaths.10 = EXT:yw_contentautomation/Resources/Private/Layouts/
+  }
+  settings {
+    # default number of pages to display
+    count = 10
+  }
+}
+
+# Include slider styles and scripts
+page.includeCSS {
+  yw_contentautomation_swiper = EXT:yw_contentautomation/Resources/Public/css/swiper.css
+  yw_contentautomation_latest = EXT:yw_contentautomation/Resources/Public/css/latestcontent.css
+}
+page.includeJSFooter {
+  yw_contentautomation_swiper = EXT:yw_contentautomation/Resources/Public/javascript/swiper-bundle.min.js
+  yw_contentautomation_latest = EXT:yw_contentautomation/Resources/Public/javascript/latestcontent.js
+  }
+# Register LatestContent plugin with the Extbase bootstrap
+tt_content.list.20.ywcontentautomation_latestcontent = USER
+tt_content.list.20.ywcontentautomation_latestcontent {
+    userFunc = TYPO3\CMS\Extbase\Core\Bootstrap->run
+    extensionName = YwContentautomation
+    pluginName = LatestContent
+    vendorName = Yummyworld
+}
+tt_content.list.20.ywcontentautomation_latestcontent = USER
+tt_content.list.20.ywcontentautomation_latestcontent {
+    userFunc = TYPO3\CMS\Extbase\Core\Bootstrap->run
+    extensionName = YwContentautomation
+    pluginName = LatestContent
+    vendorName = Yummyworld
+}
