@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" target-language="de" datatype="plaintext" original="messages"  date="2023-11-22T06:14:38Z" product-name="ns_yw_favorites">
+		<header/>
+		<body>
+            <trans-unit id="list_delete_success">
+                <target>Liste gelöscht</target>
+            </trans-unit>
+            <trans-unit id="list_reordered_success">
+                <target>Neu sortiert!</target>
+            </trans-unit>
+            <trans-unit id="already_added_to">
+                <target>Bereits hinzugefügt zu</target>
+            </trans-unit>
+            <trans-unit id="added_to">
+                <target>Hinzugefügt zu</target>
+            </trans-unit>
+            <trans-unit id="page_remove_from_list">
+                <target>Gericht von Liste entfernt</target>
+            </trans-unit>
+            <trans-unit id="list_not_exists">
+                <target>Die Liste existiert nicht mehr</target>
+            </trans-unit>
+            <trans-unit id="name_field_required" >
+                <target>Name ist erforderlich</target>
+            </trans-unit>
+            <trans-unit id="name_required" >
+                <target>Name ist erforderlich</target>
+            </trans-unit>
+            <trans-unit id="login_first">
+                <target>Bitte erst anmelden</target>
+            </trans-unit>
+            <trans-unit id="somethins_wrong">
+                <target>Etwas ist schief gelaufen</target>
+            </trans-unit>
+            <trans-unit id="image_error">
+                <target>Bitte lade ein Bild hoch</target>
+            </trans-unit>
+            <trans-unit id="share_list_already_added">
+                <target>Favoritenliste bereits hinzugefügt</target>
+            </trans-unit>
+            <trans-unit id="share_list_added" resname="share_list_added">
+                <target>Gemeinsame Favoritenliste hinzugefügt</target>
+            </trans-unit>
+            <trans-unit id="shoplist.list_name">
+				<target>Name</target>
+			</trans-unit>
+			<trans-unit id="shoplist.list_description">
+				<target>Beschreibung</target>
+			</trans-unit>
+            <trans-unit id="shoplist.save">
+				<target>Speichern</target>
+			</trans-unit>
+            <trans-unit id="tx_nsywfavorites_domain_model_addtofavourite.logedout">
+                <target>Bitte erst enmelden</target>
+            </trans-unit>
+            <trans-unit id="shoplist.choose_file">
+				<target>Bild auswählen</target>
+			</trans-unit>
+            <trans-unit id="sharedList.username" resname="sharedList.username">
+				<target>Benutzername</target>
+			</trans-unit>
+            <trans-unit id="sharedList.image" resname="sharedList.image">
+				<target>Bild</target>
+			</trans-unit>
+            <trans-unit id="sharedList.name" resname="sharedList.name">
+				<target>Name</target>
+			</trans-unit>
+            <trans-unit id="sharedList.description" resname="sharedList.description">
+				<target>Beschreibung</target>
+			</trans-unit>
+            <trans-unit id="sharedList.sharedNumber" resname="sharedList.sharedNumber">
+				<target>Gemeinsame Nummer</target>
+			</trans-unit>
+            <trans-unit id="sharedList.shareLink" resname="sharedList.shareLink">
+				<target>Link teilen</target>
+			</trans-unit>
+            <trans-unit id="sharedList.noItem" resname="sharedList.noItem">
+				<target>Keine Artikel gefunden!</target>
+			</trans-unit>
+            <trans-unit id="sharedList.settings" resname="sharedList.settings">
+				<target>Einstellungen</target>
+			</trans-unit>
+            <trans-unit id="sharedList.numberOfResults" resname="sharedList.numberOfResults">
+				<target>Anzahl der Ergebnisse</target>
+			</trans-unit>
+            <trans-unit id="sharedList.showAll" resname="sharedList.showAll">
+				<target>Alle anzeigen</target>
+			</trans-unit>
+            <trans-unit id="sharedList.ordering" resname="sharedList.ordering">
+				<target>Bestellung</target>
+			</trans-unit>
+            <trans-unit id="sharedList.orderingField" resname="sharedList.orderingField">
+				<target>Bestellfeld</target>
+			</trans-unit>
+            <trans-unit id="sharedList.ascending" resname="sharedList.ascending">
+				<target>Aufsteigend</target>
+			</trans-unit>
+            <trans-unit id="sharedList.descending" resname="sharedList.descending">
+				<target>Absteigend</target>
+			</trans-unit>
+            <trans-unit id="sharedList.created" resname="sharedList.created">
+				<target>Erstellt</target>
+			</trans-unit>
+            <trans-unit id="sharedList.username" resname="sharedList.username">
+				<target>Benutzername</target>
+			</trans-unit>
+            <trans-unit id="sharedList.username" resname="sharedList.username">
+				<target>Teilen Sie</target>
+			</trans-unit>
+            <trans-unit id="sharedList.addToFavPid" resname="sharedList.addToFavPid">
+				<target>Zu Favorit hinzufügen Pid</target>
+			</trans-unit>
+            <trans-unit id="sharedList.favPid" resname="sharedList.favPid">
+				<target>Bevorzugtes Pid</target>
+			</trans-unit>
+            <trans-unit id="sharedList.isEditable" resname="sharedList.isEditable">
+				<target>Ist sie editierbar?</target>
+			</trans-unit>
+            <trans-unit id="sharedList.clickToCopy" resname="sharedList.clickToCopy">
+				<target>URL kopieren</target>
+			</trans-unit>
+            <trans-unit id="no.page.found" resname="no.page.found">
+              <target>Keine Seite gefunden</target>
+            </trans-unit>
+
+		</body>
+	</file>
+</xliff>

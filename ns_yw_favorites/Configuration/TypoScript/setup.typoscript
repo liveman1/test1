@@ -1,0 +1,150 @@
+# Includes Page Configuration
+// Temporary disable TYPO3 cache
+// config.no_cache = 1
+
+plugin.tx_nsywfavorites_pi2 {
+    settings {
+        #cat = ns_yw_favorites/settings/01; type=string; label=Redirect Page Id After Share
+        redirectPID = {$plugin.tx_nsywfavorites_pi2.settings.redirectPID}
+
+        #cat = ns_yw_favorites/settings/02; type=string; label=Admin User Group
+        adminUserGroup = {$plugin.tx_nsywfavorites_pi2.settings.adminUserGroup}
+
+        #cat = ns_yw_favorites/settings/03; type=string; label=Pro User Group
+        proUserGroup = {$plugin.tx_nsywfavorites_pi2.settings.proUserGroup}
+    }
+}
+
+// Grab our custom-js for Overlay content modal
+// yw - performance improvement
+#[loginUser('*')]
+page = PAGE
+page {
+    includeJS {
+        #favswiper = EXT:ns_yw_favorites/Resources/Public/javascript/swiper-bundle.min.js
+        favcustom = EXT:ns_yw_favorites/Resources/Public/javascript/nsywfavorites.js
+	#favcustom = EXT:ns_yw_favorites/Resources/Public/javascript/nsywfavorites.min.js
+        #favtoastrjs = EXT:ns_yw_favorites/Resources/Public/javascript/toastr.min.js
+        #sharelist = EXT:ns_yw_favorites/Resources/Public/javascript/ShareList.js
+	#sharelist.disableCompression = 1
+	#sharelist.excludeFromConcatenation = 1
+    }
+    includeJSFooter {
+        sharelist = EXT:ns_yw_favorites/Resources/Public/javascript/ShareList.js
+	sharelist.defer = 1
+        favswiper = EXT:ns_yw_favorites/Resources/Public/javascript/swiper-bundle.min.js
+	favswiper.defer = 1
+        #favcustom = EXT:ns_yw_favorites/Resources/Public/javascript/nsywfavorites.min.js
+	#favcustom.defer = 1
+        favtoastrjs = EXT:ns_yw_favorites/Resources/Public/javascript/toastr.min.js
+	#favtoastrjs.defer = 1
+    }
+}
+page.includeCSS {
+        #favfile = EXT:ns_yw_favorites/Resources/Public/css/swiper.css
+        #favfile1 = EXT:ns_yw_favorites/Resources/Public/css/custom.min.css
+        favtoastrcss = EXT:ns_yw_favorites/Resources/Public/css/toastr.min.css
+    }
+[loginUser('*')]
+page.includeCSS {
+        #favfile = EXT:ns_yw_favorites/Resources/Public/css/swiper.css
+        favfile1 = EXT:ns_yw_favorites/Resources/Public/css/custom.min.css
+        #favtoastrcss = EXT:ns_yw_favorites/Resources/Public/css/toastr.min.css
+    }
+
+[global]	
+
+###  CSS async loading
+page.footerData {
+	1601 = TEXT
+	1601.value = <link rel="stylesheet" href="{path : favfile = EXT:ns_yw_favorites/Resources/Public/css/swiper.css}" media="all" />
+	1601.insertData = 1
+
+	#1602 = TEXT
+	#1602.value = <link rel="stylesheet" href="{path : favfile = EXT:ns_yw_favorites/Resources/Public/css/custom.css}" media="all" />
+	#1602.insertData = 1
+
+	#1603 = TEXT
+	#1603.value = <link rel="stylesheet" href="{path : favfile = EXT:ns_yw_favorites/Resources/Public/css/toastr.min.css}" media="all" />
+	#1603.insertData = 1
+}
+// Preparation of AJAX request
+favouriteAjax = PAGE
+favouriteAjax {  
+    typeNum = 9000
+    config {  
+        disableAllHeaderCode = 1    
+        additionalHeaders = Content-type: application/html
+        debug = 0
+        no_cache = 1     
+        admPanel = 0   
+    }
+
+    // Let's grab the page title
+    10 = RECORDS
+    10 {
+        source.data = page:uid
+        tables = pages
+        conf.pages = TEXT
+        conf.pages.field = title
+        wrap = <div class="pageTitle">|</div>
+    }
+
+    // Get the content of defined page with colPos=0
+    20 = CONTENT
+    20 {    
+        table = tt_content
+        select {
+            where {
+                data = GP:colpos
+                wrap = colPos=|
+            }
+        }
+        wrap = <div class="fauoritesModalInfo"> | </div>
+    }
+}
+
+config.contentObjectExceptionHandler = 0
+
+lib.UidList = FILES
+lib.UidList {
+	begin = 0
+	maxItems = 1
+	references {
+    	table = pages
+    	uid.data = uid
+    	fieldName  = twitter_image
+	}
+	renderObj = TEXT
+	renderObj {
+    	data = file:current:publicUrl
+    	wrap = |
+	}
+}
+
+lib.image = FILES
+lib.image {
+	begin = 0
+	maxItems = 1
+	references {
+    	table = tx_kesearch_filteroptions
+    	uid.data = pid
+    	fieldName  = image
+	}
+	renderObj = TEXT
+	renderObj {
+    	data = file:current:publicUrl
+    	wrap = |
+	}
+}
+
+lib.favorites {
+    editable = TEXT
+    editable.value = Editable Link
+
+    copylink = TEXT
+    copylink.value = Click Here To Copy the Link
+
+    copiedlink = TEXT
+    copiedlink.value = Link Copied..
+}

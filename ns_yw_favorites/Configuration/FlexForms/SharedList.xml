@@ -1,0 +1,123 @@
+<T3DataStructure>
+    <meta>
+        <langDisable>1</langDisable>
+    </meta>
+    <sheets>
+        <sDEF>
+            <ROOT>
+                <sheetTitle>
+                    LLL:EXT:ns_yw_favorites/Resources/Private/Language/locallang.xlf:sharedList.settings
+                </sheetTitle>
+                <type>array</type>
+                <el>
+                    <settings.showAll>
+                        <label>
+                            LLL:EXT:ns_yw_favorites/Resources/Private/Language/locallang.xlf:sharedList.showAll
+                        </label>
+                        <onChange>reload</onChange>
+                        <config>
+                            <type>check</type>
+                            <renderType>checkboxToggle</renderType>
+                            <default>0</default>
+                        </config>
+                    </settings.showAll>
+
+                    <settings.itemPerPage>
+                        <label>
+                            LLL:EXT:ns_yw_favorites/Resources/Private/Language/locallang.xlf:sharedList.numberOfResults
+                        </label>
+                        <displayCond>FIELD:settings.showAll:!=:1    </displayCond>
+                        <config>
+                            <type>input</type>
+                            <eval>int</eval>
+                            <range>
+                                <lower>1</lower>
+                            </range>
+                            <default>10</default>
+                        </config>
+                    </settings.itemPerPage>
+
+                    <settings.ordering>
+                        <label>
+                            LLL:EXT:ns_yw_favorites/Resources/Private/Language/locallang.xlf:sharedList.ordering
+                        </label>
+                        <config>
+                            <type>select</type>
+                            <renderType>selectSingle</renderType>
+                            <items>
+                                <numIndex index="1">
+                                    <numIndex index="0"> LLL:EXT:ns_yw_favorites/Resources/Private/Language/locallang.xlf:sharedList.ascending</numIndex>
+                                    <numIndex index="1">ASC</numIndex>
+                                </numIndex>
+                                <numIndex index="2">
+                                    <numIndex index="0"> LLL:EXT:ns_yw_favorites/Resources/Private/Language/locallang.xlf:sharedList.descending</numIndex>
+                                    <numIndex index="1">DESC</numIndex>
+                                </numIndex>
+                            </items>
+                        </config>
+                    </settings.ordering>
+
+
+                    <settings.orderingField>
+                        <label>
+                            LLL:EXT:ns_yw_favorites/Resources/Private/Language/locallang.xlf:sharedList.orderingField
+                        </label>
+                        <config>
+                            <type>select</type>
+                            <renderType>selectSingle</renderType>
+                            <items>
+                                <numIndex index="1">
+                                    <numIndex index="0"> LLL:EXT:ns_yw_favorites/Resources/Private/Language/locallang.xlf:sharedList.created</numIndex>
+                                    <numIndex index="1">uid</numIndex>
+                                </numIndex>
+                                <numIndex index="2">
+                                    <numIndex index="0"> LLL:EXT:ns_yw_favorites/Resources/Private/Language/locallang.xlf:sharedList.username</numIndex>
+                                    <numIndex index="1">username</numIndex>
+                                </numIndex>
+                                <numIndex index="3">
+                                    <numIndex index="0"> LLL:EXT:ns_yw_favorites/Resources/Private/Language/locallang.xlf:sharedList.shared</numIndex>
+                                    <numIndex index="1">shared</numIndex>
+                                </numIndex>
+                            </items>
+                        </config>
+                    </settings.orderingField>
+
+                    <settings.favPid>
+                        <TCEforms>
+                            <label>
+                                LLL:EXT:ns_yw_favorites/Resources/Private/Language/locallang.xlf:sharedList.favPid
+                            </label>
+                            <config>
+                                <type>group</type>
+                                <internal_type>db</internal_type>
+                                <allowed>pages</allowed>
+                                <size>1</size>
+                                <maxitems>1</maxitems>
+                                <minitems>0</minitems>
+                                <required>true</required>
+                            </config>
+                        </TCEforms>
+                    </settings.favPid>
+
+                    <settings.addToFavPid>
+                        <TCEforms>
+                            <label>
+                                LLL:EXT:ns_yw_favorites/Resources/Private/Language/locallang.xlf:sharedList.addToFavPid
+                            </label>
+                            <config>
+                                <type>group</type>
+                                <internal_type>db</internal_type>
+                                <allowed>pages</allowed>
+                                <size>1</size>
+                                <maxitems>1</maxitems>
+                                <minitems>0</minitems>
+                                <required>true</required>
+                            </config>
+                        </TCEforms>
+                    </settings.addToFavPid>
+
+                </el>
+            </ROOT>
+        </sDEF>
+    </sheets>
+</T3DataStructure>

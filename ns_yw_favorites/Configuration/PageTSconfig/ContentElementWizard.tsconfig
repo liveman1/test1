@@ -1,0 +1,34 @@
+mod {
+    wizards.newContentElement.wizardItems.plugins {
+        elements {
+            pi1 {
+                iconIdentifier = ns_yw_favorites-plugin-pi1
+                title = LLL:EXT:ns_yw_favorites/Resources/Private/Language/locallang_db.xlf:tx_ns_custom_t3sbootstrap_pi1.name
+                description = LLL:EXT:ns_yw_favorites/Resources/Private/Language/locallang_db.xlf:tx_ns_custom_t3sbootstrap_pi1.description
+                tt_content_defValues {
+                    CType = list
+                    list_type = nsywfavorites_pi1
+                }
+            },
+            pi2 {
+                iconIdentifier = ns_yw_favorites-plugin-pi1
+                title = LLL:EXT:ns_yw_favorites/Resources/Private/Language/locallang_db.xlf:tx_ns_custom_t3sbootstrap_pi2.name
+                description = LLL:EXT:ns_yw_favorites/Resources/Private/Language/locallang_db.xlf:tx_ns_custom_t3sbootstrap_pi2.description
+                tt_content_defValues {
+                    CType = list
+                    list_type = nsywfavorites_pi2
+                }
+            },
+            pi3 {
+                iconIdentifier = ns_yw_favorites-plugin-pi1
+                title = LLL:EXT:ns_yw_favorites/Resources/Private/Language/locallang_db.xlf:tx_ns_custom_t3sbootstrap_pi3.name
+                description = LLL:EXT:ns_yw_favorites/Resources/Private/Language/locallang_db.xlf:tx_ns_custom_t3sbootstrap_pi3.description
+                tt_content_defValues {
+                    CType = list
+                    list_type = nsywfavorites_pi3
+                }
+            }
+        }
+        show = *
+    }
+}
