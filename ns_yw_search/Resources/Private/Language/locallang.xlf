@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2015-07-24T20:37:42Z">
+		<header/>
+		<body>
+			<trans-unit id="palette.access">
+                <source>Access</source>
+            </trans-unit>
+            <trans-unit id="title">
+                <source>Title</source>
+            </trans-unit>
+
+            <trans-unit id="ns_imageteaser.readmore">
+                <source>Read more!</source>
+            </trans-unit>
+            <trans-unit id="message">
+                <source>We use cookies and other tracking technologies to personalize and improve your experience. By continuing to use our website, you consent to this.</source>
+            </trans-unit>
+            <trans-unit id="dismiss">
+                <source>Accept</source>
+            </trans-unit>
+            <trans-unit id="deny">
+                <source>Decline</source>
+            </trans-unit>
+            <trans-unit id="policy">
+                <source>Cookie Policy</source>
+            </trans-unit>
+            <trans-unit id="link">
+                <source>Learn More</source>
+            </trans-unit>
+
+            <!-- Module LLL Start-->
+            <trans-unit id="extensionName">
+                <source>Theme Options</source>
+            </trans-unit>
+            <trans-unit id="globalsettings">
+                <source>Global Setting</source>
+            </trans-unit>
+            <trans-unit id="documentaiton">
+                <source>Documentaiton</source>
+            </trans-unit>
+            <trans-unit id="helpsupport">
+                <source>Support</source>
+            </trans-unit>
+            <trans-unit id="donate">
+                <source>Donate</source>
+            </trans-unit>
+            <trans-unit id="loginT3Terminal">
+                <source>Login at T3Terminal</source>
+            </trans-unit>
+            <trans-unit id="Dashboard">
+                <source>Dashboard</source>
+            </trans-unit>
+            <trans-unit id="aboutExtension">
+                <source>About</source>
+            </trans-unit>
+            <trans-unit id="generalSettings">
+                <source>General</source>
+            </trans-unit>
+            <trans-unit id="seoSettings">
+                <source>SEO</source>
+            </trans-unit>
+            <trans-unit id="gdprSettings">
+                <source>GDPR</source>
+            </trans-unit>
+            <trans-unit id="styleSettings">
+                <source>Style</source>
+            </trans-unit>
+            <trans-unit id="integrationSettings">
+                <source>Integration</source>
+            </trans-unit>
+            <trans-unit id="sorry">
+                <source>Sorry!</source>
+            </trans-unit>
+            <trans-unit id="noconstantline1">
+                <source>No Extension Template available for this Page.</source>
+            </trans-unit>
+            <trans-unit id="noconstantline2">
+                <source>Option 1. To configure template globally, Click on your main root page. </source>
+            </trans-unit>
+            <trans-unit id="noconstantline3">
+                <source>Option 2: To create custom configuration at particular page, Go to the Template Module > Create Extension Template for this page.</source>
+            </trans-unit>
+            <trans-unit id="noconstantline4">
+                <source>Do you want to go with Option 2? Then </source>
+            </trans-unit>
+            <trans-unit id="templatelinkText">
+                <source>Click Here</source>
+            </trans-unit>
+            <trans-unit id="save">
+                <source>Save Changes</source>
+            </trans-unit>
+            <trans-unit id="noThemeConfiguration">
+                <source>Sorry, Configuration not available for this category!</source>
+            </trans-unit>
+            <trans-unit id="tx_nscustomt3sbootstrap_domain_model_addtofavourite.name">
+                <source>Add To Favourite</source>
+            </trans-unit>
+            <trans-unit id="tx_nscustomt3sbootstrap_domain_model_addtofavourite.logedout">
+                <source>Please Login First</source>
+            </trans-unit>
+            <trans-unit id="reorder">
+                <source>Reorder</source>
+            </trans-unit>
+            <trans-unit id="path">
+                <source>Path</source>
+            </trans-unit>
+            <!-- Module LLL End-->
+                </body>
+        </file>
+</xliff>

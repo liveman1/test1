@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2015-01-06T20:41:06Z" product-name="NITSANpageadds">
+		<header/>
+		<body>
+            <trans-unit id="palette.access">
+                <source>Access</source>
+            </trans-unit>
+            <trans-unit id="headline">
+                <source>Headline</source>
+            </trans-unit>
+            <trans-unit id="tx_ns_custom_t3sbootstrap_pi1.name">
+                <source>Add To Favourite</source>
+            </trans-unit>
+			<trans-unit id="tx_ns_custom_t3sbootstrap_pi2.name">
+                <source>Favourite Management</source>
+            </trans-unit>
+            <trans-unit id="tx_nstest_domain_model_addtofavourite" resname="tx_nstest_domain_model_addtofavourite">
+				<source>Addtofavourite</source>
+			</trans-unit>
+			<trans-unit id="tx_nstest_domain_model_addtofavourite.name" resname="tx_nstest_domain_model_addtofavourite.name">
+				<source>Name</source>
+			</trans-unit>
+			<trans-unit id="tx_nstest_domain_model_addtofavourite.pic" resname="tx_nstest_domain_model_addtofavourite.pic">
+				<source>Pic</source>
+			</trans-unit>
+			<trans-unit id="tx_ns_test_pi1.name" resname="tx_ns_test_pi1.name">
+				<source>addtofavourite</source>
+			</trans-unit>
+			<trans-unit id="tx_ns_test_pi2.name" resname="tx_ns_test_pi2.name">
+				<source>favourite</source>
+			</trans-unit>
+			<trans-unit id="tx_ns_test_pi1.description" resname="tx_ns_test_pi1.description">
+				<source></source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

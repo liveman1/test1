@@ -1,0 +1,97 @@
+<!--
+	=====================
+	Partials/ResultRow.html
+-->
+{namespace grav=NITSAN\NsYwSearch\ViewHelpers}
+
+                <f:if condition="{resultrow.filePreviewId}">
+                    <f:then>
+                        <!--  -->
+                        <a href="">
+                            
+                        </a>
+			            <div class="swiper-slide">
+                            <figure class="image">
+                                <picture>
+                                    <span class="card--image">    
+                                        <f:if condition="<f:cObject typoscriptObjectPath='lib.UidList' data='{uid:resultrow.orig_uid}' />">
+                                            <f:then>
+                                                <f:image src="<f:cObject typoscriptObjectPath='lib.UidList' data='{uid:resultrow.orig_uid}' />" treatIdAsReference="{treatIdAsReference}" maxWidth="150" maxWidth="150" />
+                                            </f:then>
+                                        </f:if>      
+                                    </span>
+                                </picture>
+                            </figure>
+                            <div class="card-body">
+                                <h0 class="card-title mb-3">
+                                    <a href="{resultrow.orig_row.nav_title}">
+                                        <grav:subtitle uid="{resultrow.orig_uid}" />
+                                        {resultrow.title_text.subtitle}
+                                    </a>
+                                </h0>
+                                <f:if condition="{resultrow.teaser} != ''">
+                                    <f:then>
+                                        <p class="card--text">
+                                            <f:format.raw>{resultrow.teaser}</f:format.raw>
+                                        </p>
+                                    </f:then>
+                                    <f:else>
+                                        <p class="card--text">
+                                            <f:format.raw>{resultrow.teaser}</f:format.raw>
+                                        </p>
+                                    </f:else>
+                                </f:if>
+                            </div>
+                        </div>
+                    </f:then>
+                    <f:else>
+                            <!--  -->
+                        <div class="swiper-slide">
+                            <figure class="image">
+                                <picture>
+                                    <span class="card--image">    
+                                        <f:if condition="<f:cObject typoscriptObjectPath='lib.UidList' data='{uid:resultrow.orig_uid}' />">
+                                            <f:then>
+                                                <f:image src="<f:cObject typoscriptObjectPath='lib.UidList' data='{uid:resultrow.orig_uid}' />" treatIdAsReference="{treatIdAsReference}" maxWidth="200" />
+                                            </f:then>
+                                        </f:if>      
+                                    </span>
+                                </picture>
+                            </figure>
+                            <div class="card-body">
+                                <h0 class="card-title mb-3">
+                                    <a href="{resultrow.orig_row.nav_title}">
+                                        <grav:subtitle uid="{resultrow.orig_uid}" />
+                                        {resultrow.title_text.subtitle}
+                                    </a>
+                                </h0>
+                                <f:if condition="{resultrow.teaser} != ''">
+                                    <f:then>
+                                        <p class="card--text">
+                                            <f:format.raw>{resultrow.teaser}</f:format.raw>
+                                        </p>
+                                    </f:then>
+                                    <f:else>
+                                        <p class="card--text">
+                                            <f:format.raw>{resultrow.teaser}</f:format.raw>
+                                        </p>
+                                    </f:else>
+                                </f:if>
+                            </div>
+                        </div>
+                    </f:else>
+                </f:if>
+ 
+
+<f:section name="typeIconOrPreviewImage">
+    <f:if condition="{iconConf} && !{filePreviewId}">
+        <f:then>
+            <f:image src="{icon}" maxWidth="16" maxHeight="16" />
+        </f:then>
+        <f:else>
+            <f:if condition="{filePreviewId}">
+                <f:image src="{filePreviewId}" treatIdAsReference="{treatIdAsReference}" maxWidth="200" />
+            </f:if>
+        </f:else>
+    </f:if>
+</f:section>

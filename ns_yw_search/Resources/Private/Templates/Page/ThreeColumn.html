@@ -1,0 +1,26 @@
+1<f:layout name="Default" />
+2
+3<f:section name="Header">
+4   <!-- add header here ! -->
+5</f:section>
+6
+7<f:section name="Main">
+8   <f:render partial="Jumbotron" />
+9    <div class="container">
+10      <div class="row">
+11        <div class="col-md-4">
+12          <f:cObject typoscriptObjectPath="lib.dynamicContent" data="{colPos: '1'}" />
+13        </div>
+14        <div class="col-md-4">
+15          <f:cObject typoscriptObjectPath="lib.dynamicContent" data="{colPos: '0'}" />
+16        </div>
+17        <div class="col-md-4">
+18          <f:cObject typoscriptObjectPath="lib.dynamicContent" data="{colPos: '2'}" />
+19        </div>
+20      </div>
+21    </div>
+22</f:section>
+23
+24<f:section name="Footer">
+25    <!-- add footer here ! -->
+26</f:section>

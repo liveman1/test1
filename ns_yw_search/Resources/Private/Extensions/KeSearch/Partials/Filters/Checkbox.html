@@ -1,0 +1,26 @@
+<!--
+	=====================
+	Partials/Filters/Checkbox.html
+-->
+<div class="list" id="list_{filter.id}">
+    <ul id="options_{filter.id}" class="checkboxList">
+        <f:for each="{filter.checkboxOptions}" as="option">
+            <f:if condition="{option.image}"><f:variable name="bgImg">{option.image}</f:variable></f:if>
+            <f:if condition="{option.isParent} == 1">
+                <li class="optionCheckBox optionCheckBox{filter.uid} optionCheckBox{filter_uid}_{option.value} optionCheckBox--parent" style="margin-right: 30px; background-image: url('{bgImg}');">
+                    <input type="checkbox" name="{filter.name}[{option.key}]" id="{option.id}" class="{option.id}" value="{option.tag}" {f:if(condition: '{option.selected}', then: ' checked="checked"')} {f:if(condition: '{option.disabled}', then: 'disabled = "disabled"')} />
+                    <label for="{option.id}">{option.title}</label>
+                </li>
+            </f:if>
+        </f:for>
+        <f:for each="{filter.checkboxOptions}" as="option">
+            <f:if condition="{option.image}"><f:variable name="bgImg">{option.image}</f:variable></f:if>
+            <f:if condition="{option.isParent} == 0">
+                <li class="optionCheckBox optionCheckBox{filter.uid} optionCheckBox{filter_uid}_{option.value} {f:if(condition: '{option.image}', then: 'optionCheckBox--img')}" style="background-image: url('{bgImg}');">
+                    <input type="checkbox" name="{filter.name}[{option.key}]" id="{option.id}" class="{option.id}" data-cat="childCat" value="{option.tag}" {f:if(condition: '{option.selected}', then: ' checked="checked"')} {f:if(condition: '{option.disabled}', then: 'disabled = "disabled"')} />
+                    <label for="{option.id}">{option.title}</label>
+                </li>
+            </f:if>
+        </f:for>
+    </ul>
+</div>
