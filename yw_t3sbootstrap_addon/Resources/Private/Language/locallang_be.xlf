@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.0">
+  <file source-language="en" datatype="plaintext" original="messages" >
+    <body>
+      <trans-unit id="yw_bscarousel.title">
+        <source>YW BS Carousel</source>
+      </trans-unit>
+      <trans-unit id="yw_bscarousel.pages">
+        <source>Pages</source>
+      </trans-unit>
+      <trans-unit id="page_swiper.title">
+        <source>Page Swiper</source>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

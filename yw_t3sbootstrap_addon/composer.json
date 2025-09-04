@@ -1,0 +1,13 @@
+{
+  "name": "yw/yw-t3sbootstrap-addon",
+  "type": "typo3-cms-extension",
+  "description": "Addon for t3sbootstrap providing yw_BS Carousel content element",
+  "require": {
+    "typo3/cms-core": "^11.5 || ^12.4"
+  },
+  "autoload": {
+    "psr-4": {
+      "YwExtensions\\YwT3sbootstrapAddon\\": "Classes/"
+    }
+  }
+}
