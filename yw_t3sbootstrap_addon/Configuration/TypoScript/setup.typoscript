@@ -1,0 +1,20 @@
+lib.contentElement.partialRootPaths.20 = EXT:yw_t3sbootstrap_addon/Resources/Private/Extensions/t3sbootstrap/Partials/Content/
+
+tt_content.yw_bscarousel =< lib.contentElement
+tt_content.yw_bscarousel {
+    templateRootPaths.10 = EXT:yw_t3sbootstrap_addon/Resources/Private/Templates/
+    partialRootPaths.10 = EXT:t3sbootstrap/Resources/Private/Partials/
+    layoutRootPaths.10 = EXT:t3sbootstrap/Resources/Private/Layouts/
+    templateName = YwBsCarousel
+    dataProcessing {
+        10 = YwExtensions\YwT3sbootstrapAddon\DataProcessing\PageCardsProcessor
+    }
+}
+
+tt_content.page_swiper =< lib.contentElement
+tt_content.page_swiper {
+    templateRootPaths.10 = EXT:yw_t3sbootstrap_addon/Resources/Private/Templates/Content/
+    partialRootPaths.10 = EXT:t3sbootstrap/Resources/Private/Partials/
+    layoutRootPaths.10 = EXT:t3sbootstrap/Resources/Private/Layouts/
+    templateName = PageSwiper
+}
