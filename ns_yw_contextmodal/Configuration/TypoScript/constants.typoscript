@@ -1,0 +1,19 @@
+# Let's define some constants for global configuration
+ns_yw_contextmodal {
+    website {
+        paths {
+            #cat = ns_yw_contextmodal/website/settings/01; type=string; label=Template Path
+            templateRootPath = typo3conf/ext/ns_yw_contextmodal/Resources/Private/Templates/
+
+            #cat = ns_yw_contextmodal/website/settings/02; type=string; label=Layouts Path
+            layoutRootPath = typo3conf/ext/ns_yw_contextmodal/Resources/Private/Layouts/
+
+            #cat = ns_yw_contextmodal/website/settings/03; type=string; label=Partials Path
+            partialRootPath = typo3conf/ext/ns_yw_contextmodal/Resources/Private/Partials/
+        }
+        settings {
+            #cat=ns_yw_contextmodal/website/settings/04; type=int; label=Add modalID for context modal
+            modalID = 317
+        }              
+    }
+}

@@ -1,0 +1,493 @@
+let commentsSubmitResponse = false;
+let commentModule;
+let allowEvents = 0;
+document.documentElement.setAttribute('ontouchmove', 'ontouchmove');
+addEventListener("DOMContentLoaded", async (event) => {
+
+   // const subTitleData = await getSubTitleData();
+    // Get the URL
+    const url = window.location.href;
+    const ymPagePattern = /ym-(.+)/;
+    if(getCookie("ymPageSlugLink") !== null || getCookie("ymPageSlugLink") !== '') {
+        if (url.match(ymPagePattern)) {
+            const lang = document.documentElement.lang;
+            const ymPageSlugPart = url.split('/'+`${lang.slice(0,5)}` + '/');
+            setCookie('ymPageSlugLink', ymPageSlugPart[1], 30);
+            let redirectURL = `${window.location.protocol}//${window.location.hostname}/${lang.slice(0,5)}`;
+            window.location.href = redirectURL;
+        }
+    }    
+    if(document.getElementsByClassName('ymPage').length > 0){
+        for(var i = 0; i < document.getElementsByClassName('ymPage').length; i++){
+            if(getCookie("ymPageSlugLink") !== null || getCookie("ymPageSlugLink") !== '') {
+                if (getCookie('ymPageSlugLink') === document.getElementsByClassName('ymPage')[i].getAttribute('id')) {
+                    if(document.getElementsByClassName('ymPage')[i].getAttribute('menuitem') === '3'){
+                        document.getElementsByClassName('ymPage')[i].addEventListener("click", (ev)=> {
+                            let slug = ev.target.getAttribute('id');
+                            let bsModalId = TYPO3.settings.TS.contextModaID;
+                            let bsModal = document.querySelector(`#modal-${bsModalId}`);
+                          //  let appendId = convertToCamelCase(subTitleData[`${slug}`])
+                          //          if(appendId) {
+                          //      bsModal.addEventListener('show.bs.modal', function () {
+                          //          history.pushState(null, null, appendId);
+                          //      });
+                          //      bsModal.addEventListener('hide.bs.modal', function () {
+                          //          if (window.location.hash === appendId) {
+                          //              history.replaceState(null, null, ' ');
+                          //          }
+                          //      });
+                          //  }
+                        })
+                        document.getElementsByClassName('ymPage')[i].click();
+                        setCookie('ymPageSlugLink','',3600);
+                    }
+                }
+            }
+            document.getElementsByClassName('ymPage')[i].addEventListener(
+              "click",
+            (event) => {                
+                var x = event.target;
+                // Let's grab "TYPO3 Slug" for clicked-button
+                const slug = x.getAttribute('id');
+                // Let's grab "TYPO3 colpos" specified in button
+
+                let bsModalId = TYPO3.settings.TS.contextModaID;
+                let bsModal = document.querySelector(`#modal-${bsModalId}`);
+              //  let appendId = convertToCamelCase(subTitleData[`${slug}`])
+              //          if(appendId) {
+              //      bsModal.addEventListener('show.bs.modal', function () {
+              //          history.pushState(null, null, appendId);
+              //      });
+            
+              //      bsModal.addEventListener('hide.bs.modal', function () {
+              //          if (window.location.hash === appendId) {
+              //              history.replaceState(null, null, ' ');
+              //          }
+              //      });
+              //  }
+
+                const colpos = x.getAttribute('menuItem');
+
+                const mainPageUid = x.getAttribute('data-pid');
+                var subPageUids = [];
+
+                const modalContent = x.getAttribute('contextModal');
+
+                // Let's grab url with entrypoints
+		const href = window.location.href;
+		const entryPointString = href.split("/").pop();
+		const entryPoint = entryPointString.slice(0,5);
+                // fetchSubPageUid
+                let subPageUrl = `${entryPoint}?type=1699527132&mainPid=${mainPageUid}`
+
+                fetch(subPageUrl, {
+                    method: 'GET',
+                }).then((res) => res.json()).then((res) => {
+                    subPageUids = res;
+                }) .then(()=>{
+                    if(colpos !== '3' && colpos !== '4'){
+                        // Prepare AJAX request + Pass to TypoScript with TypeNum & colpos
+                        const getUrl = `${entryPoint}/${slug}?type=990&colpos=${colpos}`;
+                        fetch(getUrl, {
+                            method: 'GET',
+                        }).then((res) => res.text()).then((res) => {
+                            
+                            const parser = new DOMParser();
+                            const htmlDoc = parser.parseFromString(res, 'text/html');
+    
+                            const modalId = TYPO3.settings.TS.contextModaID;
+                            // const modal = document.querySelector(`.${modalContent}`);
+                            const modal = document.querySelector(`#modal-${modalId}`);
+                    
+                            const modalBody = modal.querySelector('.modal-body');
+                            const modalHeader = modal.querySelector('.modal-header h2');
+                          
+                            let count = 0;
+                            modalBody.addEventListener('scroll', () => {
+                                if (isScrolledToBottom(modalBody)) {
+                                    if(subPageUids[count]) {
+                                        let preparedUrl = `${entryPoint}/${subPageUids[count]}?type=990&colpos=0`;
+                                        loadAndAppendSubPageData(modal, modalBody, preparedUrl)
+                                    }
+                                    count++;
+                                }
+                            })
+    
+    
+                            // const contextModal = new bootstrap.Modal(document.querySelector(`.${modalContent}`));
+                            const contextModal = new bootstrap.Modal(document.querySelector(`#modal-${modalId}`));                        
+                            contextModal.show();
+                            modalHeader.innerHTML = '';
+                            // // Render Page Title to Modalbox
+                            if(htmlDoc.querySelector('.pageTitle')){
+                                modalHeader.innerText = htmlDoc.querySelector('.pageTitle').innerText;
+                            }
+                            modalBody.innerHTML = '';
+    
+                            // Render page content selected on colpos
+                            if(htmlDoc.querySelector('.pageContent')){
+                                modalBody.appendChild(htmlDoc.querySelector('.pageContent'));
+                            }
+    
+                            /* Comment Form submit - Context Modal -- start*/
+                            var commentForm = document.querySelector('.pageContent form');
+    
+                            if(commentForm){
+                                const formName = commentForm.getAttribute('name');
+                                commentForm.addEventListener(
+                                    "submit",
+                                    (e) => {
+                                        e.preventDefault();
+                                        const formData = new FormData(commentForm);
+                                        const request = new XMLHttpRequest();
+                                        let action = commentForm.getAttribute('action');
+                                        request.open("POST", action, true);
+                                        request.onreadystatechange = function() {
+                                            if (request.readyState === XMLHttpRequest.DONE) {
+                                                const response = request.responseText;
+                                                const htmlRes = parser.parseFromString(response, 'text/html');
+                                                // document.querySelector('.pageContent .tx-pwcomment-pi1 form').innerHTML = '';
+                                                document.querySelector('.pageContent .tx-pwcomment-pi1 #comments').innerHTML = '';
+                                                const formResponseMsg =  htmlRes.querySelector('.tx-pwcomment-pi1 .typo3-messages').innerHTML;
+                                                const commentResponse =  htmlRes.querySelector('.tx-pwcomment-pi1 #comments').innerHTML;
+                                                if(formResponseMsg){
+                                                    document.querySelector('.pageContent .tx-pwcomment-pi1 form').innerHTML += formResponseMsg;
+                                                    document.querySelector('.pageContent .tx-pwcomment-pi1 #comments').innerHTML = commentResponse;
+                                                    commentsSubmitResponse = true;
+                                                    allCommentActions();
+                                                    commentModule = true;                                            }
+                                            }
+                                        };
+                                        request.send(formData);
+                                    },
+                                    false
+                                );
+                            }
+                            /* Comment Form submit - Context Modal -- end*/
+    
+                            // load Swiper container
+                            const initializedSwiper = document.querySelector('.contextSwiper');
+                            if(initializedSwiper){
+                                loadSwiper(initializedSwiper);
+                            }
+			    // Account Management Button Handling
+                            const anotherModal = modalBody.querySelectorAll('button');
+                            if(anotherModal){
+                            	//loadAnotherModal(anotherModal, contextModal);
+                            	document.body.addEventListener('click', ym_useraccount_menu);
+                            }
+    
+                        });
+                    }
+                })
+            });
+        }
+    }
+});
+
+// Open Account Management Modal
+function ym_useraccount_menu(event) {
+	// Check if the clicked element is the yw_account_button
+	if (event.target.id === 'yw_account_button') {
+		//var myModal = document.getElementById('modal-3100');
+		//var myModalE1 = new bootstrap.Modal(myModal);
+		//myModalE1.show();
+		// Output a console message when the button is actually clicked
+		//console.log("Account Button clicked");
+		// Open payment modal from payment extension with ajax call instead
+		var paymentButton = document.getElementById('payment');
+		if (paymentButton) {
+			paymentButton.click();
+		}								
+	}
+}
+
+// Set cookie value
+function setCookie(name, value, minutes) {
+    var expires = "";
+    if (minutes) {
+        var date = new Date();
+        //date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000)); // expire in days
+        date.setTime(date.getTime() + (minutes * 60 * 1000)); // expires in minutes
+        expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + value + expires + "; path=/";
+}
+
+function convertToCamelCase(input) {
+    return input.replace(/\s/g, '');
+}
+
+async function getSubTitleData()
+{
+    let url = window.location.href;
+    let ymPagePattern = /ym-(.+)/;
+    let href = window.location.href;
+    let entryPoint = href.split("/").pop();
+    let slugArray = [];
+    for(var i = 0; i < document.getElementsByClassName('ymPage').length; i++){
+       let slug =  document.getElementsByClassName('ymPage')[i].getAttribute('id');
+       slugArray.push(slug);
+    }
+    if (url.match(ymPagePattern)) {
+        let lang = document.documentElement.lang;
+        let ymPageSlugPart = url.split('/'+`${lang.slice(0,5)}` + '/');
+        slugArray.push(ymPageSlugPart);
+    }
+    let arr = entryPoint.split('?');
+    let finalURL = '';
+    if (arr.length > 1 && arr[1] !== '') {
+        finalURL = `${entryPoint}&type=1701869876&slug=${[slugArray]}`;
+    } else {
+        finalURL = `${entryPoint}?type=1701869876&slug=${[slugArray]}`;
+    }
+    const result =  await fetch(finalURL, {
+        method: 'GET',
+        }).then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            return data;
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    return result;
+}
+
+// Get cookie value
+function getCookie(name) {
+    var nameEQ = name + "=";
+    var cookies = document.cookie.split(';');
+    for (var i = 0; i < cookies.length; i++) {
+        var cookie = cookies[i];
+        while (cookie.charAt(0) === ' ') {
+            cookie = cookie.substring(1, cookie.length);
+        }
+        if (cookie.indexOf(nameEQ) === 0) {
+            return cookie.substring(nameEQ.length, cookie.length);
+        }
+    }
+    return null;
+}
+
+function loadAnotherModal(anotherModal, contextModal){
+    for(var j = 0; j < anotherModal.length; j++) {
+        const buttons = anotherModal.item(j);
+        buttons.addEventListener('click', function (e) {
+            var p = e.target;
+            contextModal.hide();
+            const modalContentPayment = p.getAttribute('paymentModal');
+            if(modalContentPayment === 'ymPayment'){
+                // Let's grab "TYPO3 Slug" for clicked-button
+                const slugPayment = p.getAttribute('id');
+
+                // Let's grab "TYPO3 colpos" specified in button
+                const colposPayment = p.getAttribute('menuItem');
+
+                // Let's grab url with entrypoints
+                const href = window.location.href;
+                const entryPoint = href.split("/").pop();
+
+                // Prepare AJAX request + Pass to TypoScript with TypeNum & colpos
+                const getUrl = `${entryPoint}/${slugPayment}?type=990&colpos=${colposPayment}`;
+                fetch(getUrl, {
+                    method: 'GET',
+                }).then((res) => res.text()).then((res) => {
+
+                    const parser = new DOMParser();
+                    const htmlDocs = parser.parseFromString(res, 'text/html');
+
+                    const paymentModalId = TYPO3.settings.TS.paymentModalID;
+                    // const modal = document.querySelector(`.${modalContent}`);
+                    const modal = document.querySelector(`#modal-${paymentModalId}`);
+
+                    // const modal = document.querySelector(`.${modalContentPayment}`);
+                    const paymentBody = modal.querySelector('.modal-body');
+                    const paymentHeader = modal.querySelector('.modal-header h2');
+
+                    const paymentModal = new bootstrap.Modal(document.querySelector(`#modal-${paymentModalId}`));
+                    // const paymentModal = new bootstrap.Modal(document.querySelector(`.${modalContentPayment}`));
+                    paymentModal.show();
+                    paymentHeader.innerHTML = '';
+                    // // Render Page Title to Modalbox
+                    if(htmlDocs.querySelector('.pageTitle')){
+                        paymentHeader.innerText = htmlDocs.querySelector('.pageTitle').innerText;
+                    }
+                    paymentBody.innerHTML = '';
+
+                    // Render page content selected on colpos
+                    if(htmlDocs.querySelector('.pageContent')){
+                        paymentBody.appendChild(htmlDocs.querySelector('.pageContent'));
+                    }
+
+
+                    if(window.location.href.includes('?redirect')){
+                        document.querySelector('.modal').addEventListener('hide.bs.modal', function (event) {
+                            // Your code here
+                            var urlWithoutParams = window.location.href.split('?')[0];
+                            window.location.href = urlWithoutParams;
+                        });
+                        paymentModal.hide();
+                    }
+
+                    // load Swiper container
+                    const paymentSwiperDiv = document.querySelector('.paymentSwiper');
+                    if(paymentSwiperDiv){
+                        loadSwiper(paymentSwiperDiv);
+                    }
+
+                    if(window.location.href.includes('?redirect')){
+                        let paymentStatus = document.getElementById('paymentStatus');
+                        let paymentRedirectUrl = window.location.href;
+                        if(paymentRedirectUrl.search){
+                            paymentRedirectUrl.search = '';
+                            let payment = paymentRedirectUrl.split("?").pop();
+                            if(paymentStatus){
+                                paymentStatus.setAttribute('value', payment);
+                                // Ajax Call for the updating the user
+                                let updateUrl = paymentStatus.getAttribute('data-url');
+                            }
+                        }
+
+                        // Tab shows the
+                        let tab3 = document.querySelector("ul > li:nth-child(3)").children[0];
+                        tab3.classList.add('active');
+                        tab3.setAttribute("aria-selected", "true");
+
+
+                        // Tab Content Shows
+                        let tabContent3 = document.getElementsByClassName('tab-pane')[2];
+                        tabContent3.classList.add('active');
+                        tabContent3.classList.add('show');
+                    }
+                    else{
+                        // Tab shows the
+                        let tab1 = document.querySelector("ul > li:first-child").children[0];
+                        tab1.classList.add('active');
+                        tab1.setAttribute("aria-selected", "true");
+
+
+                        // Tab Content Shows
+                        let tabContent = document.getElementsByClassName('tab-pane')[0];
+                        tabContent.classList.add('active');
+                        tabContent.classList.add('show');
+                    }
+
+                });
+            }
+        });
+    }
+}
+
+
+function loadSwiper(initializedSwiper){
+    const spv = initializedSwiper.getAttribute('data-spv');
+    const spb = initializedSwiper.getAttribute('data-spb');
+    const spg = initializedSwiper.getAttribute('data-spg');
+    const del = initializedSwiper.getAttribute('data-del');
+    const b576 = initializedSwiper.getAttribute('data-b576');
+    const b768 = initializedSwiper.getAttribute('data-b768');
+    const b992 = initializedSwiper.getAttribute('data-b992');
+    const lop = initializedSwiper.getAttribute('data-lop');
+    const suid = initializedSwiper.getAttribute('data-suid');
+    var pagination = initializedSwiper.getAttribute('data-pagination');
+    var navigation = initializedSwiper.getAttribute('data-navigation');
+    var swiperClass = initializedSwiper.getAttribute('data-swiperclass');
+
+    if(parseInt(lop) === 0){
+        var swiperContext = new Swiper('.'+ swiperClass, {
+            slidesPerView: parseInt(spv),
+            spaceBetween: parseInt(spb),
+            slidesPerGroup: parseInt(spg),
+            pagination: {
+                el: '.swiper-pagination',
+                type: 'bullets',
+                clickable: true,
+            },
+            autoplay: {
+                delay: parseInt(del),
+            },
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+            breakpoints: {
+                10: {
+                    slidesPerView: 1,
+                },
+                576: {
+                    slidesPerView: parseInt(b576),
+                },
+                768: {
+                    slidesPerView: parseInt(b768),
+                },
+                992: {
+                    slidesPerView: parseInt(b992),
+                },
+            },
+        });
+    }
+    else{
+        var swiperContext = new Swiper('.'+ swiperClass, {
+            slidesPerView: parseInt(spv),
+            spaceBetween: parseInt(spb),
+            slidesPerGroup: parseInt(spg),
+            loop: true,
+            pagination: {
+                el: '.swiper-pagination',
+                type: 'bullets',
+                clickable: true,
+            },
+            autoplay: {
+                delay: parseInt(del),
+            },
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+        });
+    }
+}
+
+function isScrolledToBottom(element) {
+    var scrollTop = element.scrollTop;
+    var scrollHeight = element.scrollHeight;
+    var clientHeight = element.clientHeight;
+
+    // Check if the user has reached the bottom
+    return scrollTop + 5 +clientHeight >= scrollHeight;
+}
+
+function loadAndAppendSubPageData(modal, modalBody, url)
+{
+    
+    var spinnerElement = document.createElement("div");
+    spinnerElement.className = "spinner-border";
+    spinnerElement.setAttribute("id", 'subPageLoader')
+    spinnerElement.setAttribute("role", "status");
+    modal.style.overflowY = 'hidden';
+
+    modalBody.appendChild(spinnerElement)
+    fetch(url, {
+        method: 'GET',
+    }).then((res) => res.text()).then((res) => {
+        const parser = new DOMParser();
+        const htmlDoc = parser.parseFromString(res, 'text/html');
+        if(htmlDoc.querySelector('.pageContent')){
+            modalBody.appendChild(htmlDoc.querySelector('.pageContent'));
+        }
+        const initializedSwiper = document.querySelector('.contextSwiper');
+        if(initializedSwiper){
+            loadSwiper(initializedSwiper);
+        }
+        modalBody.removeChild(spinnerElement);
+        
+    });
+    modal.style.overflowY = 'auto';
+}
+
+
