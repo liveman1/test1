@@ -1,0 +1,29 @@
+tt_content.yw_bscarousel =< lib.contentElement
+tt_content.yw_bscarousel {
+  templateName = YwBsCarousel
+
+  # Make sure Fluid can find our files
+  templateRootPaths {
+    10 = EXT:t3sbootstrap/Resources/Private/Templates/
+    20 = EXT:yw_t3sbootstrap_addon/Resources/Private/Templates/
+  }
+  partialRootPaths {
+    10 = EXT:t3sbootstrap/Resources/Private/Partials/
+    20 = EXT:yw_t3sbootstrap_addon/Resources/Private/Partials/
+  }
+  layoutRootPaths {
+    10 = EXT:t3sbootstrap/Resources/Private/Layouts/
+    20 = EXT:yw_t3sbootstrap_addon/Resources/Private/Layouts/
+  }
+
+  dataProcessing {
+    10 = Yw\YwT3sbootstrapAddon\DataProcessing\PagesCarouselProcessor
+  }
+}
+
+# make our templates/partials/layouts available globally
+lib.contentElement {
+  templateRootPaths.20 = EXT:yw_t3sbootstrap_addon/Resources/Private/Templates/
+  partialRootPaths.20  = EXT:yw_t3sbootstrap_addon/Resources/Private/Partials/
+  layoutRootPaths.20   = EXT:yw_t3sbootstrap_addon/Resources/Private/Layouts/
+}

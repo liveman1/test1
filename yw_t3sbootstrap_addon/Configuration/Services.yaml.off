@@ -1,0 +1,12 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  Yw\YwT3sbootstrapAddon\:
+    resource: '../Classes/*'
+
+  Yw\YwT3sbootstrapAddon\DataProcessing\PagesCarouselProcessor:
+    public: true
+
