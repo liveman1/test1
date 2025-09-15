@@ -1,6 +1,0 @@
-# Example: add to allowed CTypes in Swiper column(s) if needed
-# (Adjust selector to your installation if container plugin uses a dedicated colPos/IRRE)
-TCEFORM.tt_content.CType.removeItems :=
-# Ensure our CType never gets removed by global "removeItems" rules
-TCEFORM.tt_content.CType.keepItems := addToList(yw_bscarousel)
-
