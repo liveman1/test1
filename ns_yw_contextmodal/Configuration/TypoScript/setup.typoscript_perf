@@ -1,0 +1,112 @@
+# Includes Page Configuration
+// Temporary disable TYPO3 cache
+// config.no_cache = 1
+
+// Preparation of AJAX request
+OverlayAjax = PAGE 
+OverlayAjax {  
+    typeNum = 990
+    config { 
+        disableAllHeaderCode = 1    
+        additionalHeaders = Content-type: application/html
+        debug = 0
+        no_cache = 1     
+        admPanel = 0   
+    }
+
+    // Let's grab the page title
+    10 = RECORDS
+    10 {
+        source.data = page:uid
+        tables = pages
+        conf.pages = TEXT
+        conf.pages.field = title
+        wrap = <div class="pageTitle">|</div>
+    }
+
+    // Get the content of defined page with colPos=0
+    20 = CONTENT
+    20 {    
+        table = tt_content
+        select {
+            where {
+                data = GP:colpos
+                wrap = colPos=|
+            }
+        }
+        wrap = <div class="pageContent">|</div>
+    }
+}
+
+// Grab our custom-js for Overlay content modal
+// yw - performance improvement
+[loginUser('*')]
+page = PAGE
+page{
+    inlineSettings{
+        contextModaID = {$ns_yw_contextmodal.website.settings.modalID}
+        paymentModalID = {$plugin.tx_nsywpayment_paypal.settings.modalID}
+        favouriteModalID = {$ns_yw_favorites.website.settings.modalID}
+        searchModalID = {$ns_yw_search.website.settings.modalID}
+        shopBasketModalID = {$ns_yw_shop.website.settings.modalID}
+    }    
+    includeCSS{
+      //  contextCss = EXT:ns_yw_contextmodal/Resources/Public/css/custom.css
+    }
+    includeJS {
+        contextJs = EXT:ns_yw_contextmodal/Resources/Public/JS/Custom.js
+	contextJs.defer = 1
+    }
+}
+[global]
+
+config.contentObjectExceptionHandler = 0
+
+lib.myContent = CONTENT
+lib.myContent {
+  table = tt_content
+  select{
+    pidInList = 2
+    orderBy = sorting
+    where = {#colPos}=0
+  }
+}
+
+lib {
+    contextModal = TEXT
+    contextModal.value = {$ns_yw_contextmodal.website.settings.modalID}
+
+    paymentModal = TEXT
+    paymentModal.value = {$plugin.tx_nsywpayment_paypal.settings.modalID}
+
+    searchModal = TEXT
+    searchModal.value = {$ns_yw_search.website.settings.modalID}
+
+    favouriteModal = TEXT
+    favouriteModal.value = {$ns_yw_favorites.website.settings.modalID}
+
+    shopBasketModalID = TEXT
+    shopBasketModalID.value = {$ns_yw_shop.website.settings.modalID}
+}
+
+fetch_subpage = PAGE
+fetch_subpage {
+  typeNum = 1699527132
+
+  config {
+    no_cache = 1
+    disableAllHeaderCode = 1
+    admPanel = 0
+    removeDefaultJS = 1
+    removeDefaultCss = 1
+    
+    removePageCss = 1
+    additionalHeaders {
+      10.header = Content-Type:application/json;charset=utf-8
+      20.header = X-Robots-Tag:noindex
+    }
+  }
+
+  10 = USER
+  10.userFunc = NITSAN\NsYwContextmodal\Renderer\PageRenderer->render
+}
