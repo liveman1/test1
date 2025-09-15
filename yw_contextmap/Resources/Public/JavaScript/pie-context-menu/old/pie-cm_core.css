@@ -1,0 +1,64 @@
+
+.pie-context-menu {
+  display: none;
+  position: absolute;
+  margin:0;
+  padding:0;
+  pointer-events: none;
+  z-index: 1001;
+}
+
+.pie-context-menu--active {
+  display: block;
+}
+
+.pie-context-menu svg {
+  width: 100%;
+}
+
+.pie-context-menu circle {
+  fill:rgba(0,0,0,0); 
+  cursor:pointer;
+  pointer-events: stroke;
+}
+
+.pie-context-menu text{
+  pointer-events: none;
+  -webkit-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
+  text-anchor: middle;
+
+}
+.pie-context-menu text::selection {
+    background: none;
+}
+
+/* OPTIONS */
+
+.pie-context-menu circle.pcm_center{
+    fill:#80BD9E;
+}
+
+.pie-context-menu circle.pcm_button{
+    stroke:#FFB85F;
+}
+    
+.pie-context-menu circle.pcm_button--hover{
+    stroke: #FF7A5A;
+}
+
+.pie-context-menu text.pcm_title{
+    fill:white;
+}
+
+.pie-context-menu text.pcm_icon{
+    fill:white;
+    font-size:32px;
+    font-family:FontAwesome;
+}
+
+.pie-context-menu text.pcm_icon--hover{
+    fill:#763626;
+}

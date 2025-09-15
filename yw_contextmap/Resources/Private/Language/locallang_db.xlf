@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<T3locallang xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:noNamespaceSchemaLocation="https://schemas.typo3.org/typo3cms/typo3/ll.xlf.xsd">
+  <data type="array">
+    <languageKey index="default" type="array">
+      <label index="tt_content.list_type_ywcontextmap_viewer">YW Context Map</label>
+    </languageKey>
+  </data>
+</T3locallang>

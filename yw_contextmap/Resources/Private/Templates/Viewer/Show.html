@@ -1,0 +1,29 @@
+{namespace f=TYPO3\CMS\Fluid\ViewHelpers}
+{namespace yw=Yummyworld\YwContextmap\ViewHelpers}
+<div id="os-rez13" style="{settings.viewer.style -> f:or(alternative: 'width: 100%; height: 100vh; background-color:#7ebbff;')}">
+  <script>
+    <f:format.raw>
+      <yw:overrideTileSources
+        content="{f:cObject(typoscriptObjectPath: 'lib.ym_viewer_config')}"
+        tileSource="{settings.tileSource}"
+        tileOpacity="{settings.tileOpacity -> f:or(alternative: 1)}" />
+	<!-- 3) Additional overlays -->
+	<f:cObject typoscriptObjectPath="lib.ym_viewer_overlays" />
+        <f:cObject typoscriptObjectPath="lib.ym_viewer_cloud_overlays" />
+
+	<!-- 4) Context menu -->
+	<f:cObject typoscriptObjectPath="lib.ym_viewer_menu" />
+
+	<!-- 5) Modal menu -->
+	<f:cObject typoscriptObjectPath="lib.ym_modalmenu" />
+
+	<!-- 6) Additional DZI images -->
+	<f:cObject typoscriptObjectPath="lib.ym_viewer_images" />
+
+	<!-- 7) Advertising and other overlays -->
+	<f:cObject typoscriptObjectPath="lib.ym_viewer_advertisement_dyn" />
+        <f:cObject typoscriptObjectPath="lib.ym_viewer_advertisement_static_adsense" />
+        <f:cObject typoscriptObjectPath="lib.ym_viewer_advertisement_static_gif" />
+    </f:format.raw>
+  </script>
+</div>

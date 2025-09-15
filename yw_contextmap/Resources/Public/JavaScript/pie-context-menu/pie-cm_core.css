@@ -1,0 +1,81 @@
+
+.pie-context-menu {
+  display: none;
+  position: absolute;
+  margin:0;
+  padding:0;
+  pointer-events: none;
+  z-index: 1001;
+}
+
+.pie-context-menu--active {
+  display: block;
+}
+
+.pie-context-menu svg {
+  width: 100%;
+}
+
+.pie-context-menu circle {
+  fill:rgba(0,0,0,0);
+  cursor:pointer;
+  pointer-events: stroke;
+}
+
+.pie-context-menu text{
+  pointer-events: none;
+  -webkit-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
+  text-anchor: middle;
+
+}
+.pie-context-menu text::selection {
+    background: none;
+}
+
+/* OPTIONS */
+
+.pie-context-menu circle.pcm_center{
+  fill:rgba(255,255,255,0.8);
+}
+
+.pie-context-menu circle.pcm_button{
+  stroke:rgba(245,242,226,0.8);
+}
+.pie-context-menu circle.pcm_button--hover{
+  stroke: rgba(114,173,243,0.8);
+}
+
+.pie-context-menu text.pcm_title{
+  fill: #615854;
+  font-weight: 700;
+}
+
+.pie-context-menu text.pcm_icon{
+  fill:#372d2c;
+  font-family: FontAwesome;
+  font-weight: 500;
+}
+
+.pie-context-menu text.pcm_icon--hover{
+  fill:#fff;
+}
+
+body h1, .pie-context-menu, .pcm_group, .menuable, .pcm_title{
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+}
+
+body {
+  touch-action: pan-x pan-y;
+}
+
+html {
+  -webkit-text-size-adjust: none;
+  touch-action: manipulation;
+}
