@@ -1,0 +1,20 @@
+{
+  "name": "yummyworld/yw-contextmap",
+  "type": "typo3-cms-extension",
+  "description": "Frontend plugin to render yummy.world context map with OpenSeadragon overlays & menus.",
+  "license": "MIT",
+  "version": "1.0.0",
+  "require": {
+    "typo3/cms-core": "^11.5 || ^12.4"
+  },
+  "autoload": {
+    "psr-4": {
+      "Yummyworld\\YwContextmap\\": "Classes/"
+    }
+  },
+  "extra": {
+    "typo3/cms": {
+      "extension-key": "yw_contextmap"
+    }
+  }
+}

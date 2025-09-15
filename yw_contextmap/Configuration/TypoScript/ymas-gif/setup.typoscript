@@ -1,0 +1,120 @@
+####   lib.ym_viewer_advertisement_static_gif
+lib.ym_viewer_advertisement_static_gif = CONTENT
+lib.ym_viewer_advertisement_static_gif {
+  table = pages
+  select {
+    orderBy = title
+    pidInList = 3941
+    recursive = 10
+    # uid - id, title - element, subtitle - bottom/right position, nav_title - src tx_t3sbootstrap_titlecolor - x, tx_t3sbootstrap_subtitlecolor - y, author - width, rowDescription - height
+        # div.style.position = "fixed"; div.style.z-index = "1"; div.style.bottom = "50px"; div.style.left = "30px"; div.style.width = "100px"; div.style.height = "100px";  div.style.margin = "0px"; div.style.background = "red"; div.style.border = "2px";  div.style.color = "white"; div.innerHTML = "Hello";
+    selectFields = uid, title, subtitle, nav_title, rowDescription, yw_a, yw_b, yw_c, yw_d
+    where = title LIKE '%ymas-gif%'
+  }
+  renderObj = COA
+  renderObj {
+    # only renders, if rowDescription is filled - empty overlays are not shown
+        stdWrap.if.isTrue.data = field:yw_d
+    #stdWrap.if.equals = img
+        #stdWrap.if.value.data = field:subtitle
+        ### create new div element for each static advertisement page element 
+    1 = TEXT
+    1.stdWrap.field = uid
+    1.stdWrap.noTrimWrap = |const newYMASa| = document.createElement('a');|
+    2 = TEXT
+    2.stdWrap.field = uid
+    2.stdWrap.noTrimWrap = |newYMASa|.href=|
+    3 = TEXT
+    3.stdWrap.field = rowDescription
+    3.stdWrap.noTrimWrap = |'|';|
+    4 = TEXT
+    4.stdWrap.field = uid
+    4.stdWrap.noTrimWrap = |newYMASa|.target="_blank";|
+        # Create Div/Img
+    5 = TEXT
+    5.stdWrap.field = uid
+    5.stdWrap.noTrimWrap = |const newYMASDiv| = document.createElement|
+    7 = TEXT
+    7.stdWrap.field = subtitle
+    7.stdWrap.noTrimWrap = |('|');|
+    10 = TEXT
+    10.stdWrap.field = uid
+    10.stdWrap.noTrimWrap = |newYMASDiv|.src=|
+    12 = TEXT
+    12.stdWrap.field = nav_title
+    12.stdWrap.noTrimWrap = |'|';|
+        ### add class - page specific and common ymas 
+    13 = TEXT
+    13.stdWrap.field = uid
+    13.stdWrap.noTrimWrap = |newYMASDiv|.className =|
+    15 = TEXT
+    15.stdWrap.field = uid
+    15.stdWrap.noTrimWrap = | "ymas| ymas gif"; |
+        ### add style position, z-index, x, y, height, width 
+        17 = TEXT
+    17.stdWrap.field = uid
+    17.stdWrap.noTrimWrap = |newYMASDiv|.style.position = 'fixed'; |
+    20 = TEXT
+    20.stdWrap.field = uid
+    20.stdWrap.noTrimWrap = |newYMASDiv|.style.zIndex = '0'; |
+    23 = TEXT
+    23.stdWrap.field = uid
+    23.stdWrap.noTrimWrap = |newYMASDiv|.style.left = |
+    25 = TEXT
+    25.stdWrap.field = yw_a
+    25.stdWrap.noTrimWrap = |"|"; |
+    27 = TEXT
+    27.stdWrap.field = uid
+    27.stdWrap.noTrimWrap = |newYMASDiv|.style.bottom = |
+    30 = TEXT
+    30.stdWrap.field = yw_b
+    30.stdWrap.noTrimWrap = |"|"; |
+    32 = TEXT
+    32.stdWrap.field = uid
+    32.stdWrap.noTrimWrap = |newYMASDiv|.style.width = |
+    35 = TEXT
+    35.stdWrap.field = yw_c
+    35.stdWrap.noTrimWrap = |"|";|
+    37 = TEXT
+    37.stdWrap.field = uid
+    37.stdWrap.noTrimWrap = |newYMASDiv|.style.height = |
+    40 = TEXT
+    40.stdWrap.field = yw_d
+    40.stdWrap.noTrimWrap = |"|";|
+    ### formatting example
+    43 = TEXT
+    43.stdWrap.field = uid
+    43.stdWrap.noTrimWrap = |newYMASDiv|.style.margin = "0px"; |
+    48 = TEXT
+    48.stdWrap.field = uid
+    48.stdWrap.noTrimWrap = |newYMASDiv|.style.color = "white"; |
+    49 = TEXT
+    49.stdWrap.field = uid
+    49.stdWrap.noTrimWrap = |newYMASDiv|.style.objectFit = 'cover';|
+    ### content example
+    50 = TEXT
+    50.stdWrap.field = uid
+    50.stdWrap.noTrimWrap = |newYMASDiv|.innerHTML = |
+    51 = TEXT
+    51.stdWrap.field = rowDescription
+    51.stdWrap.noTrimWrap = |"|";|
+        ### add the newly created element and its content into the DOM
+    140 = TEXT
+    140.stdWrap.field = uid
+    140.stdWrap.noTrimWrap = |newYMASa|
+    145 = TEXT
+    145.stdWrap.field = uid
+    145.stdWrap.noTrimWrap = |.appendChild(newYMASDiv|);|
+
+    150 = TEXT
+    150.stdWrap.field = uid
+    150.stdWrap.noTrimWrap = |document.getElementById("c1").appendChild(newYMASa|);|
+
+        #55 = TEXT
+    #55.stdWrap.field = uid
+    #55.stdWrap.noTrimWrap = |const lastYMASdiv = document.getElementById("c1"); document.body.insertBefore(newYMASDiv|, lastYMASdiv)| 
+
+  }
+  wrap = document.body.onload = addYMASElement; function addYMASElement() {|};
+}
+

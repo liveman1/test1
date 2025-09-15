@@ -1,0 +1,35 @@
+# Map plugin template
+plugin.tx_ywcontextmap {
+  view {
+    templateRootPaths.10 = EXT:yw_contextmap/Resources/Private/Templates/
+    partialRootPaths.10 = EXT:yw_contextmap/Resources/Private/Partials/
+    layoutRootPaths.10 = EXT:yw_contextmap/Resources/Private/Layouts/
+  }
+  features {
+    # keep default
+  }
+}
+
+# Optional: include JS via page.includeJSFooter based on constants (alternative to PageRenderer in Controller)
+[traverse(page, 'uid') > 0]
+page.includeJSFooter {
+  yw_osHref = {$plugin.tx_ywcontextmap.settings.js.ymOsHref}
+  yw_osBookmark = {$plugin.tx_ywcontextmap.settings.js.ymOsBookmark}
+  yw_pieCmImages = {$plugin.tx_ywcontextmap.settings.js.pieCmImages}
+  yw_osHtmlOverlay = {$plugin.tx_ywcontextmap.settings.js.ymOsHtmlOverlay}
+}
+[END]
+
+
+# Ensure ym-os-href is in HEADER, others in FOOTER (fallback if controller loading is disabled)
+[traverse(page, 'uid') > 0]
+page.includeJSlibs {
+  yw_osHref = {$plugin.tx_ywcontextmap.settings.js.ymOsHref}
+  # forceOnTop not available here, but libs load in header section
+}
+page.includeJSFooter {
+  yw_osBookmark = {$plugin.tx_ywcontextmap.settings.js.ymOsBookmark}
+  yw_pieCmImages = {$plugin.tx_ywcontextmap.settings.js.pieCmImages}
+  yw_osHtmlOverlay = {$plugin.tx_ywcontextmap.settings.js.ymOsHtmlOverlay}
+}
+[END]

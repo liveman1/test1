@@ -1,0 +1,828 @@
+
+// Metadata to consider screen width of mobiles
+page.meta.viewport = width=device-width, initial-scale=1, maximum-scale=1.0, minimum-scale=1
+
+// Include JS required for vimi application
+page.includeJS {
+      //OpenSeadragon renamed to YMviewer for security reasons
+      os = EXT:yw_contextmap/Resources/Public/JavaScript/os/ym-os-href.min.js
+      //OpenSeadragon renamed to YMviewer for security reasons
+      osurl = EXT:yw_contextmap/Resources/Public/JavaScript/os-url/ym-os-bookmark-url.min.js
+      osurl.excludeFromConcatenation = 0
+      //osurl.async = 1    //async does not work for iOS
+      #piemenu = EXT:yw_contextmap/Resources/Public/JavaScript/pie-context-menu/pie-cm-images.js
+      piemenu = EXT:yw_contextmap/Resources/Public/JavaScript/pie-context-menu/pie-cm-images.min.js
+      //piemenu.async = 1    //async does not work for iOS
+      // os-html-overlay required for overlays, that must not interact with map navigation (eg. ads)
+      #osoverlay = EXT:yw_contextmap/Resources/Public/JavaScript/os-over/ym_os-html-overlay.js
+      osoverlay = EXT:yw_contextmap/Resources/Public/JavaScript/os-over/ym_os-html-overlay.min.js
+      }
+	  
+	  
+### add openseadragon overlays per javascript in footer                       
+### Add Viewer JS to Footer
+### add cloud cover overlays for no-pro users
+page.jsFooterInline.5 =< lib.ym_viewer_cloud_overlays
+### add recipe os div overlays to touch open recipe pie menu only for logged in users 
+# -> enable / disable menu context overlay for logged-out users
+#[loginUser('*')]
+page.jsFooterInline.10 =< lib.ym_viewer_overlays
+#[global]
+### add pie-context-menu & Context Modal                       
+page.jsFooterInline.20 =< lib.ym_viewer_menu
+### add os image tiles based on lang setting                   
+page.jsFooterInline.30 =< lib.ym_viewer_images
+### add dynamic size/position advertisement divs               
+#page.jsFooterInline.40 =< lib.ym_viewer_advertisement_dyn_HTMLelement
+page.jsFooterInline.40 =< lib.ym_viewer_advertisement_dyn
+### add static size/position advertisement divs - works only for one!              
+page.jsFooterInline.50 =< lib.ym_viewer_advertisement_static_adsense
+page.jsFooterInline.51 =< lib.ym_viewer_advertisement_static_gif  
+#page.jsFooterInline.55 =< lib.ym_viewer_advertisement_static_adcash
+page.jsFooterInline.60 =< lib.ym_modalmenu
+
+
+
+### 1. Lib Viewer Config
+### Documentation
+#       //tileSources: "fileadmin/vimi/images/ym_img/ym_test/YM_cover/YM_cover.dzi",
+lib.ym_viewer_config = TEXT
+lib.ym_viewer_config.value (
+    YMviewer.pixelDensityRatio = 1;
+    var viewer = YMviewer({
+        id: "os-rez13",
+        tileSources: [
+          {tileSource: "fileadmin/vimi/images/ym_img/ym_test/YM_cover/YM_cover.dzi", opacity: 1}
+                    ],
+        showNavigationControl: 0,
+	debugMode:  false,
+	visibilityRatio: 0.5,
+	defaultZoomLevel: 1,
+	minZoomLevel: 1, 
+        zoomPerClick: 4,
+	zoomPerDblClickDrag: 2,
+	tileRetryMax: 2,
+	tileRetryDelay: 8000,
+        constrainDuringPan: false,
+        immediateRender: false,
+	springStiffness: 10,
+	alwaysBlend: true,
+	preload: true,
+	maxImageCacheCount: 2000,
+	imageLoaderLimit: 0,
+	imageSmoothingEnabled: true,
+	useCanvas: true,
+	iOSDevice: 1,
+	loadTilesWithAjax: false,
+	subPixelRoundingForTransparency: YMviewer.SUBPIXEL_ROUNDING_OCCURRENCES.ALWAYS,
+	gestureSettingsMouse: {clickToZoom: false, dblClickToZoom: true},
+	gestureSettingsTouch: {clickToZoom: false, dblClickToZoom: true},
+	gestureSettingsPen: {clickToZoom: false, dblClickToZoom: true},
+	gestureSettingsUnknown: {clickToZoom: false, dblClickToZoom: true},
+  });  
+)
+
+  
+### 2. Lib Viewer Overlay
+lib.ym_viewer_overlays = CONTENT
+lib.ym_viewer_overlays {
+  table = pages
+  select {
+    #orderBy = title    
+    pidInList = 10
+    recursive = 10
+    # title - ingredient, nat_title - amount, subtitle - unit
+    selectFields = uid, title, subtitle, nav_title, yw_a, yw_b, yw_c, yw_d
+    where = title LIKE '%ym-%'
+  }
+  renderObj = COA
+  renderObj {
+    stdWrap.if.isTrue.data = field:yw_d
+    5 = TEXT
+    5.stdWrap.field = uid
+    5.stdWrap.noTrimWrap = |var elt| = document.createElement("div");|
+    7 = TEXT
+    7.stdWrap.field = uid
+    7.stdWrap.noTrimWrap = |elt|.id = |   
+    10 = TEXT
+    10.stdWrap.field = title        
+    10.stdWrap.noTrimWrap = |"|";|
+    12 = TEXT
+    12.stdWrap.field = uid
+    12.stdWrap.noTrimWrap = |elt|.className = "menuable vimi_map_menu";| 
+    15 = TEXT
+    15.stdWrap.field = uid
+    15.stdWrap.noTrimWrap = |viewer.addOverlay({element: elt|,location: new YMviewer.Rect|
+    17 = TEXT
+    17.stdWrap.field = yw_a
+    17.stdWrap.noTrimWrap = |(|,|   
+    20 = TEXT
+    20.stdWrap.field = yw_b
+    20.stdWrap.noTrimWrap = | |,| 
+    23 = TEXT
+    23.stdWrap.field = yw_c
+    23.stdWrap.noTrimWrap = | |,| 
+    25 = TEXT
+    25.stdWrap.field = yw_d
+    25.stdWrap.noTrimWrap = | |)});| 
+
+  }
+  ### adds zoom logic - overlays are added if zoomlevel > 10
+  wrap = var overlayAdded = false;viewer.addHandler('zoom', function(event) {var zoomlevel = 10;var zoom = viewer.viewport.getZoom();if (zoom >= zoomlevel && !overlayAdded) {| overlayAdded = true;}}); 
+}
+  
+### 2-B. Lib Viewer CLOUD COVER Overlay for no-Pro
+lib.ym_viewer_cloud_overlays = CONTENT
+lib.ym_viewer_cloud_overlays {
+  table = pages
+  select {
+    #orderBy = title    
+    pidInList = 1711
+    recursive = 2
+    # subtitle - type (img, iframe, div), nav_title - src
+    selectFields = uid, title, subtitle, nav_title, abstract, yw_a, yw_b, yw_c, yw_d
+    where = title LIKE '%ymcloud-%'
+  }
+  renderObj = COA
+  renderObj {
+    # only renders, if rowDescription is filled - empty overlays are not shown
+    stdWrap.if.isTrue.data = field:yw_d
+    5 = TEXT
+    5.stdWrap.field = uid
+    5.stdWrap.noTrimWrap = |var elt| = document.createElement|
+    6 = TEXT
+    6.stdWrap.field = subtitle
+    6.stdWrap.noTrimWrap = |('|');| 
+    7 = TEXT
+    7.stdWrap.field = uid
+    7.stdWrap.noTrimWrap = |elt|.src = |
+    8 = TEXT
+    8.stdWrap.field = nav_title
+    8.stdWrap.noTrimWrap = |'|';| 
+    9 = TEXT
+    9.stdWrap.field = uid
+    9.stdWrap.noTrimWrap = |elt|.id = |                               
+    10 = TEXT
+    10.stdWrap.field = title
+    # Use the title of the primary language page if this page is a translation
+    #10.data = page:l10n_parent.title                                                              
+    10.stdWrap.noTrimWrap = |"|";|
+    11 = TEXT
+    11.stdWrap.field = uid
+    11.stdWrap.noTrimWrap = |elt|.style.objectFit = 'contain';|                                 
+    12 = TEXT
+    12.stdWrap.field = uid
+    12.stdWrap.noTrimWrap = |elt|.className = "yw_cloud lazy";| 
+    13 = TEXT
+    13.stdWrap.field = uid
+    13.stdWrap.noTrimWrap = |elt|.alt = |
+    14 = TEXT
+    14.stdWrap.field = abstract
+    14.stdWrap.noTrimWrap = |'|';| 
+    15 = TEXT
+    15.stdWrap.field = uid
+    15.stdWrap.noTrimWrap = |viewer.addOverlay({element: elt|,location: new YMviewer.Rect|
+    17 = TEXT
+    17.stdWrap.field = yw_a
+    ## Use the tx_t3sbootstrap_titlecolor of the primary language page if this page is a translation
+    #17.data = page:l10n_parent.tx_t3sbootstrap_titlecolor
+    17.stdWrap.noTrimWrap = |(|,|   
+    20 = TEXT
+    20.stdWrap.field = yw_b
+    20.stdWrap.noTrimWrap = | |,| 
+    23 = TEXT
+    23.stdWrap.field = yw_c
+    23.stdWrap.noTrimWrap = | |,| 
+    25 = TEXT
+    25.stdWrap.field = yw_d
+    25.stdWrap.noTrimWrap = | |)});| 
+
+  }
+  ### adds zoom logic - overlays are added if zoomlevel > 10
+  #wrap = var overlayAdded = false;viewer.addHandler('zoom', function(event) {var zoomlevel = 10;var zoom = viewer.viewport.getZoom();if (zoom >= zoomlevel && !overlayAdded) {| overlayAdded = true;}}); 
+}
+  
+### 3. Lib Viewer Menu & Context Modal
+lib.ym_viewer_menu = TEXT
+lib.ym_viewer_menu.value (
+
+    // ---------------Context Menu--https://github.com/cevherkarakoc/Pie-Context-Menu------------ //  
+              // ----create menu-- upwork version -> menu_model: 1=open on touch & then select   2=open during touch & directly select     --- // 
+      var my_menu = new PieContextMenu({
+      menuID:"my_menu",
+      menuItemClass:"menuable",
+      menuSize:256,
+      touchDuration:600,
+      menu_model:1
+    });
+    const langhref = window.location.href;
+    // Check if the URL contains '/de#'
+    if (langhref.includes('/de_DE#')) {
+        // Code to execute if URL contains '/de#'
+            my_menu.addButton("Story","/fileadmin/vimi/images/ym_img/ym_modalmenu/ym_mm_story.png");
+            my_menu.addButton("Favoriten","/fileadmin/vimi/images/ym_img/ym_modalmenu/ym_mm_favorites.png");
+            my_menu.addButton("Feedback","/fileadmin/vimi/images/ym_img/ym_modalmenu/ym_mm_comment.png");
+            my_menu.addButton("Teilen","/fileadmin/vimi/images/ym_img/ym_modalmenu/ym_mm_share.png");
+       //     my_menu.addButton("Liefern","/fileadmin/vimi/images/ym_img/ym_modalmenu/ym_mm_burger.png");
+            my_menu.addButton("Kaufen","/fileadmin/vimi/images/ym_img/ym_modalmenu/ym_mm_basket.png");
+        } else {
+        // Code to execute if URL does not contain '/de#'
+              // ----add menu buttons----- //  
+            my_menu.addButton("Story","/fileadmin/vimi/images/ym_img/ym_modalmenu/ym_mm_story.png");
+            my_menu.addButton("Favorites","/fileadmin/vimi/images/ym_img/ym_modalmenu/ym_mm_favorites.png");
+            my_menu.addButton("Comment","/fileadmin/vimi/images/ym_img/ym_modalmenu/ym_mm_comment.png");
+            my_menu.addButton("Share","/fileadmin/vimi/images/ym_img/ym_modalmenu/ym_mm_share.png");
+       //     my_menu.addButton("Deliver","/fileadmin/vimi/images/ym_img/ym_modalmenu/ym_mm_burger.png");
+            my_menu.addButton("Buy","/fileadmin/vimi/images/ym_img/ym_modalmenu/ym_mm_basket.png");
+        };
+    my_menu.openMenu(); //open the menu;
+    my_menu.closeMenu(); //close the menu;
+
+              // ----Add Event Listener to Button----- // 
+    my_menu.buttons[0].element.addEventListener("click",openModal(0),false);
+    my_menu.buttons[1].element.addEventListener("click",openModal(3),false);
+    my_menu.buttons[2].element.addEventListener("click",openModal(1),false); 
+    my_menu.buttons[3].element.addEventListener("click",openModal(2),false);
+    my_menu.buttons[4].element.addEventListener("click",openModal(4),false);
+   // my_menu.buttons[5].element.addEventListener("click",openModal(5),false);  
+
+
+
+
+//openmodal for typo3 page with pagetitle=overlayId colpos=0
+//used in ym_en.js pie context js to open specific content of a recipe via pie context menu 
+    function openModal(colpos){
+        return function(event) {
+      	// var menuitem = "0";
+        // Required to separate between onClick & onTouch code in pcm.js
+        if (typeof ymtouchelementId === 'undefined') {
+        // myVar is (not defined) OR (defined AND unitialized)
+        } else {
+        ymclickelementId = undefined; // unset
+        delete(ymclickelementId); // this removes the variable completely
+        var overlayId = ymtouchelementId;
+        // myVar is defined AND initialized
+        };
+        if (typeof ymclickelementId === 'undefined') {
+        // myVar is (not defined) OR (defined AND unitialized)
+        } else {
+        var overlayId = ymclickelementId;
+        // myVar is defined AND initialized
+        };
+        // Let's grab "TYPO3 Slug" for clicked-button
+        const slug = overlayId;
+	//const slug = "burger";
+	//const slug = button.getAttribute('id');
+
+        // Let's grab "TYPO3 colpos" specified in button 
+        // const colpos = menuitem;
+	//const colpos = button.getAttribute('menuItem');
+
+  	// Let's grab url with entrypoints
+  	const href = window.location.href;
+	const entryPointString  = href.split("/").pop();  
+	const entryPoint  = entryPointString.slice(0, 5);
+	//const entryPoint  = href.split("/").pop();
+
+        // Prepare AJAX request + Pass to TypoScript with TypeNum & colpos
+        const getUrl = `${entryPoint}/${slug}?type=990&colpos=${colpos}`;
+        //const getUrl = `/${slug}?type=812&colpos=${colpos}`;
+
+        // Fetch selected page url
+        fetch(getUrl, {method: 'GET',}).then((res) => res.text()).then((res) => {
+
+        // Prpare AJAX Reults
+        const parser = new DOMParser();
+        const htmlDoc = parser.parseFromString(res, 'text/html');
+        // ad h2 to Header to show header in context modal - issue with modalmenu  
+        const modalHeader = document.querySelector('.modal#modal-436 .modal-header');
+        const modalBody = document.querySelector('.modal#modal-436 .modal-body');
+
+        // Create Modal Menu only, if it was not already create e.g. by opening modal twice
+        // Get the modal element
+        var overlaymodal = document.querySelector('#modal-436');  
+        // Add an event listener to the modal 'shown.bs.modal' event
+		overlaymodal.addEventListener('shown.bs.modal', function () { 
+			
+            // Check if the modalmenuWrapper already exists
+  			var modalmenuWrapper = document.getElementById('modalmenu-wrapper');
+  			if (!modalmenuWrapper) {                                        
+                                                    
+            	// create the container element for the buttons
+	  			var modalmenuWrapper = document.createElement('div');
+	  			modalmenuWrapper.id = 'modalmenu-wrapper';
+                modalmenuWrapper.classList.add('modalmenuWrapper');                                              
+        
+  				// create the first button element
+  				var button1 = document.createElement('button');
+  				button1.classList.add('MM_story');
+        		button1.classList.add('material-icons-outlined');
+  				button1.id = 'MM_story';
+  				button1.addEventListener('click', function() {
+    				// code for button 1
+    				//alert('Button 1 clicked!');
+    				modalmenu(0);
+  					});
+
+  				// create the second button element
+  				const button2 = document.createElement('button');
+        		button2.classList.add('MM_comment');
+  				button2.id = 'MM_comment';
+  				button2.addEventListener('click', function() {
+    				modalmenu(1);
+  					});
+  				// create the third button element
+  				const button3 = document.createElement('button');
+  				button3.classList.add('MM_share');
+        		button3.id = 'MM_share';
+  				button3.addEventListener('click', function() {
+    				modalmenu(2);
+  					});
+  				// create the fourth button element
+  				const button4 = document.createElement('button');
+  				button4.classList.add('MM_favorites');
+        		button4.id = 'MM_favorites';
+  				button4.addEventListener('click', function() {
+    				modalmenu(3);
+  					});
+      			// create the fifth button element
+  				const button5 = document.createElement('button');
+  				button5.classList.add('MM_basket');
+        		button5.id = 'MM_basket';
+  				button5.addEventListener('click', function() {
+    				modalmenu(4);
+  					});
+  
+				// Get Page Title  
+  				const pageTitle = htmlDoc.querySelector('.pageTitle');
+                                                
+  				// append Page Title and buttons to the container only if they do not yet exist
+
+				modalmenuWrapper.appendChild(pageTitle);
+        		modalmenuWrapper.appendChild(button1);
+  				modalmenuWrapper.appendChild(button2);
+  				modalmenuWrapper.appendChild(button3);
+  				modalmenuWrapper.appendChild(button4);
+  				modalmenuWrapper.appendChild(button5);
+        		// Identify Modal Close Button
+  				const existingCloseButton = modalHeader.querySelector('.btn-close');
+
+        		// Render Page Title & append ModalMenu to Modalbox
+        		//modalHeader.innerText = htmlDoc.querySelector('.pageTitle').innerText;
+        		//modalHeader.insertBefore(pageTitle, existingCloseButton);
+        		modalHeader.insertBefore(modalmenuWrapper, existingCloseButton);
+			// Close condition, if modalmenu already exists
+    		}
+  		// Close event listener, if Modal is shown
+		});
+      
+        // Render Modal Body with asynchronously loaded content from overlay page                                                                                                   
+        modalBody.innerHTML = '';
+        // Render page content selected on colpos
+        modalBody.appendChild(htmlDoc.querySelector('.pageContent'));
+        const myModal = new bootstrap.Modal(document.querySelector('#modal-436'));
+        /////
+        // Enable Shop Context Modal plugin
+        /////
+		var shopContext = modalBody.querySelector('.shopContext');
+		//console.log(shopContext);
+		if (shopContext) {
+                       	if(modalBody.querySelector('#quantity')){
+                            const defaultQuantity = modalBody.querySelector('#quantity').value;
+							let actionForm = modalBody.querySelectorAll('.ymshop-page-qty');
+							if (actionForm) {
+								formFunctionality(actionForm);
+							}                    
+                            const allArticles = document.querySelectorAll('.ymPageShopModalCard');
+                            const articleDefaultAmount = [];
+                            allArticles.forEach((article) => {
+                                if(article.classList.contains('article-active')){
+                                    articleDefaultAmount.push(article.querySelector('.standardAmount').innerHTML);
+                                }
+                            });
+                            updatedArticleAmount(defaultQuantity,articleDefaultAmount);
+                        }
+                        };
+						// Add following functions from shopContext.js as minified JS to make them available in the modal:
+						// function formFunctionality(actionForm), function updatingQuantity(type, quantityInput, btn, defaultQuantity = 0), function updatedArticleAmount(defaultQuantity, articleDefaultAmount, container = document), function updateJsonData(jsonData, targetString, action, oldString = null)
+                        function formFunctionality(e){for(let t=0;t<e.length;t++){let a=0;e[t].querySelector(".ymshop-cate-qty__plus").addEventListener("click",(e=>{e.preventDefault(),updatingQuantity("plus",e.target.closest(".ymshop-page-qty").querySelector(".quantity"),e,a),e.target.closest(".ymshop-cate-reset__qty").querySelector("#updateArticles").click()})),e[t].querySelector(".ymshop-cate-qty__minus").addEventListener("click",(e=>{e.preventDefault(),updatingQuantity("minus",e.target.closest(".ymshop-page-qty").querySelector(".quantity"),e),e.target.closest(".ymshop-cate-reset__qty").querySelector("#updateArticles").click()}))}}function updatingQuantity(e,t,a,s=0){if(t&&"plus"===e){let e=t.value,s=a.target.closest(".ymshop-page-qty").querySelector(".ymshop-cate-qty__minus");a.target.closest(".ymshop-page-qty").querySelector(".ymshop-cate-qty__plus");e>=0?(s.classList.contains("disabledButtons")&&s.classList.remove("disabledButtons"),e++):e=1,t.value=e}if(t&&"minus"===e){let e=t.value,n=a.target.closest(".ymshop-page-qty").querySelector(".ymshop-cate-qty__minus"),r=a.target.closest(".ymshop-page-qty").querySelector(".ymshop-cate-qty__plus");e>=1?(n.classList.contains("disabledButtons")&&n.classList.remove("disabledButtons"),e!=s&&r.classList.remove("disabledButtons"),e--):(n.classList.contains("disabledButtons")||n.classList.add("disabledButtons"),e=1),t.value=e}}function updatedArticleAmount(e,t,a=document){const s=a.querySelector(".updationDiv #updateArticles"),n=a.querySelector(".quantity-error");let r=a.querySelectorAll(".ymPageShopModalCard");r.forEach(((s,n)=>{s.addEventListener("click",(()=>{let r=s.querySelector(".ymshop-card__content .unit").textContent.replace(/[\[\]]/g,""),i=s.querySelector(".ymshop-card__content .standardAmount").textContent,o=s.querySelector(".ymshop-card__content div").textContent,l=a.querySelector("#shopContextData").textContent.trim(),c=i+" "+r+" "+o;if(s.classList.contains("article-active"))s.classList.add("article-disable"),l=updateJsonData(l,c,"remove"),s.classList.remove("article-active");else{l=updateJsonData(l,c,"add"),s.classList.add("article-active"),s.classList.contains("article-disable")&&s.classList.remove("article-disable");let r=a.querySelector(".updationDiv .quantity").value,i=t[n]/e*r;s.querySelector(".standardAmount").innerHTML=parseFloat(i.toFixed(2))}a.querySelector("#shopContextData").innerHTML=l}))})),s.addEventListener("click",(()=>{const s=document.querySelector(".updationDiv .quantity").value.trim();!s.match(/^\d+$/)||parseInt(s)<=0?(n.style.display="block",n.style.maxWidth="fit-content",n.textContent="Value must be integer and grater than O"):(n.style.display="none",r.forEach(((s,n)=>{let r=s.querySelector(".ymshop-card__content .unit").textContent.replace(/[\[\]]/g,""),i=s.querySelector(".ymshop-card__content div").textContent,o=a.querySelector("#shopContextData").textContent.trim(),l=s.querySelector(".ymshop-card__content .standardAmount").textContent+" "+r+" "+i;if(s.classList.contains("article-active")){let c=a.querySelector(".updationDiv .quantity").value,d=t[n]/e*c;o=updateJsonData(o,parseFloat(d.toFixed(2))+" "+r+" "+i,"replace",l),s.querySelector(".standardAmount").innerHTML=parseFloat(d.toFixed(2))}if(s.classList.contains("article-disable")){s.classList.remove("article-disable"),s.classList.add("article-active");let l=a.querySelector(".updationDiv .quantity").value,c=t[n]/e*l;o=updateJsonData(o,parseFloat(c.toFixed(2))+" "+r+" "+i,"add"),s.querySelector(".standardAmount").innerHTML=parseFloat(c.toFixed(2)),s.classList.contains("article-disable")?s.parentNode.appendChild(s):s.parentNode.insertBefore(s,s.parentNode.firstChild)}a.querySelector("#shopContextData").innerHTML=o})))}))}function updateJsonData(e,t,a,s=null){if(!e||"undefined"===e)return document.getElementById("shopContextData").innerHTML||"";/<script[^>]*>[\s\S]*?<\/script>/gi.test(e)&&(e=e.replace(/<script[^>]*>|<\/script>/gi,""));try{let n=JSON.parse(e);if("remove"===a){let e=n.recipeIngredient.indexOf(t);-1!==e&&n.recipeIngredient.splice(e,1)}else if("add"===a)n.recipeIngredient.includes(t)||n.recipeIngredient.unshift(t);else if("replace"===a){let e=n.recipeIngredient.indexOf(s);-1!==e&&null!==s&&(n.recipeIngredient[e]=t)}return`<script type="application/ld+json">\n${JSON.stringify(n,null,2)}\n<\/script>`}catch(e){return console.log("Error parsing JSON:",e),document.getElementById("shopContextData").innerHTML||""}}; 
+	// End Enable Shop Context Plugin
+
+    // Enable Swiper container
+    const initializedSwiper = document.querySelector('.contextSwiper');
+    if(initializedSwiper){
+        loadSwiper(initializedSwiper);
+    };
+
+		///////
+		// Enable pw_comments extension integration in overlay modal
+		///////
+			//var pwCommentsForm = document.querySelector('.pageContent form');
+			var pwCommentsForm = document.querySelector('.pageContent .tx-pwcomment-pi1 form[name="newComment"]');
+    //console.log(pwCommentsForm);
+    //const formID = pwCommentsForm.getAttribute('id');
+	if (pwCommentsForm) {
+    pwCommentsForm.addEventListener("submit",(event) => {
+        const formData = new FormData(pwCommentsForm); 
+
+        const submitButton = document.querySelector('[type=submit]');
+      
+        const currentPageName = submitButton.getAttribute('name');
+        const currentPage = submitButton.getAttribute('value');
+      
+        formData.append(currentPageName,currentPage);
+        const request = new XMLHttpRequest();
+        let action = pwCommentsForm.getAttribute('action'); 
+        
+        request.open("POST", action, true);
+        
+        request.onreadystatechange = function() {
+          if (request.readyState == XMLHttpRequest.DONE) {
+            const response = request.responseText;
+            const htmlRes = parser.parseFromString(response, 'text/html');
+            
+            const typo3FormResponse =  htmlRes.querySelector('#modal-436 .pageContent');
+            if (typo3FormResponse) {
+              document.querySelector('.pageContent').innerHTML = '';
+              document.querySelector('.pageContent').appendChild(typo3FormResponse);
+            } else {
+              document.querySelector('.tx-pwcomment-pi1 form').innerHTML = '';
+              const formResponse =  htmlRes.querySelector('.tx-pwcomment-pi1 .typo3-messages');
+              document.querySelector('.pageContent').appendChild(formResponse);
+            }
+          }
+      };
+    
+        request.send(formData);
+        event.preventDefault();
+      },
+      false);
+	// Close custom form if condition 
+	};		
+
+        myModal.show();
+                
+        });
+    };
+  };
+
+
+)
+  
+  
+### 4. Lib Viewer Images
+		# x - yw_a # y - yw_b # width - yw_c # opacity - yw_d # order - rowDescription - highest number is first image
+lib.ym_viewer_images = CONTENT
+lib.ym_viewer_images {
+  table = pages
+  select {
+    #orderBy = title
+	orderBy = rowDescription DESC
+    pidInList = 10
+    recursive = 10
+    # title - ingredient, nat_title - amount, subtitle - unit
+    selectFields = uid, title, rowDescription, nav_title, yw_a, yw_b, yw_c, yw_d
+    where = title LIKE '%ymd-%'
+  }
+  renderObj = COA
+  renderObj {
+    # only renders, if rowDescription is filled - empty overlays are not shown
+    stdWrap.if.isTrue.data = field:yw_a                 
+    5 = TEXT
+    5.stdWrap.field = title
+	5.stdWrap.noTrimWrap = |viewer.addTiledImage({tileSource: 'fileadmin/vimi/vimis/vimi-disk-si/|_si/|
+    7 = TEXT
+    7.stdWrap.field = title
+	7.stdWrap.noTrimWrap = ||_si.dzi',| 
+    8 = TEXT
+    8.stdWrap.field = yw_d
+    8.stdWrap.noTrimWrap = |opacity: |,|      
+    10 = TEXT
+    10.stdWrap.field = yw_a
+    10.stdWrap.noTrimWrap = |x: |,|
+    12 = TEXT
+    12.stdWrap.field = yw_b
+    12.stdWrap.noTrimWrap = |y: |,| 
+    15 = TEXT
+    15.stdWrap.field = yw_c
+    15.stdWrap.noTrimWrap = |width: |});|
+  }
+  # append javascript for openseadragon bookmark-url-change & zoom-dependent opacity of image-tiles (firstVisibleTiles are shown on low zoom) 
+  # zoomlevel = level on which hidden image tiles are shown
+  # firstVisibleTiles = amount of image tiles that are shown on low zoom level - ordered by rowDescription value
+  wrap = |viewer.drawer.canvas.id = 'yummymap'; viewer.bookmarkUrl();viewer.addHandler('zoom', function(event) {var i;var zoomlevel = 1.22;var firstVisibleTiles = 21;var count = viewer.world.getItemCount();for (i = 0; i < count; i++) {var topImage = viewer.world.getItemAt(i);if (topImage) {var zoom = viewer.viewport.getZoom();if (zoom < zoomlevel && i < firstVisibleTiles) {topImage.setOpacity(1)}else if (zoom >= zoomlevel && i >= firstVisibleTiles) {topImage.setOpacity(1)}else if (zoom < zoomlevel && i >= firstVisibleTiles) {topImage.setOpacity(0)}}}});
+}
+### Load DZI dependent of language 
+[siteLanguage("languageId") == "3"]
+lib.ym_viewer_images.renderObj {
+	5.stdWrap.noTrimWrap = |viewer.addTiledImage({tileSource: 'fileadmin/vimi/vimis/vimi-disk-en/|_en/|
+	7.stdWrap.noTrimWrap = ||_en.dzi',|
+	}
+[siteLanguage("languageId") == "2"]	
+lib.ym_viewer_images.renderObj {
+	5.stdWrap.noTrimWrap = |viewer.addTiledImage({tileSource: 'fileadmin/vimi/vimis/vimi-disk/|/|
+	7.stdWrap.noTrimWrap = ||.dzi',|
+	}
+[global]
+
+### lib.ym_viewer_advertisement_dyn - ymad elements - based on os html overlay (dynamic sizing of gifs, text, iframes etc.)
+@import 'EXT:yw_contextmap/Configuration/TypoScript/ymad/setup.typoscript'                                                 
+
+####   lib.ym_viewer_advertisement_static_adsense 
+lib.ym_viewer_advertisement_static_adsense = CONTENT
+lib.ym_viewer_advertisement_static_adsense {
+  table = pages
+  select {
+    orderBy = title
+    pidInList = 260
+    recursive = 10
+    selectFields = uid, title, subtitle, rowDescription, yw_a, yw_b, yw_c, yw_d
+    where = title LIKE '%ymas-adsense%'
+  }
+  renderObj = COA
+  renderObj {
+	stdWrap.if.isTrue.data = field:yw_d
+    5 = TEXT
+    5.stdWrap.field = uid
+    5.stdWrap.noTrimWrap = |const newYMASDiv| = document.createElement("div"); |
+    ### add ID
+	7 = TEXT
+    7.stdWrap.field = uid
+    7.stdWrap.noTrimWrap = |newYMASDiv|.id =|   
+    10 = TEXT
+    10.stdWrap.field = uid
+    10.stdWrap.noTrimWrap = | 'ymas|'; |
+	### add class - page specific and common ymas 
+    12 = TEXT
+    12.stdWrap.field = uid
+    12.stdWrap.noTrimWrap = |newYMASDiv|.className =|   
+    15 = TEXT
+    15.stdWrap.field = uid
+    15.stdWrap.noTrimWrap = | "ymas| ymas adsense"; |
+	### add style position, z-index, x, y, height, width 
+	17 = TEXT
+    17.stdWrap.field = uid
+    17.stdWrap.noTrimWrap = |newYMASDiv|.style.position = 'fixed'; |   
+    20 = TEXT
+    20.stdWrap.field = uid
+    20.stdWrap.noTrimWrap = |newYMASDiv|.style.zIndex = '0'; | 
+    23 = TEXT
+    23.stdWrap.field = uid
+    23.stdWrap.noTrimWrap = |newYMASDiv|.style.left = | 	
+    25 = TEXT
+    25.stdWrap.field = yw_a
+    25.stdWrap.noTrimWrap = |"|"; | 
+    27 = TEXT
+    27.stdWrap.field = uid
+    27.stdWrap.noTrimWrap = |newYMASDiv|.style.bottom = | 	
+    30 = TEXT
+    30.stdWrap.field = yw_b
+    30.stdWrap.noTrimWrap = |"|"; | 
+	32 = TEXT
+	32.stdWrap.field = uid
+    32.stdWrap.noTrimWrap = |newYMASDiv|.style.width = | 	
+    35 = TEXT
+    35.stdWrap.field = yw_c
+    35.stdWrap.noTrimWrap = |"|";| 
+    37 = TEXT
+    37.stdWrap.field = uid
+    37.stdWrap.noTrimWrap = |newYMASDiv|.style.height = | 	
+    40 = TEXT
+    40.stdWrap.field = yw_d
+    40.stdWrap.noTrimWrap = |"|";| 
+	### formatting example
+	43 = TEXT
+    43.stdWrap.field = uid
+    43.stdWrap.noTrimWrap = |newYMASDiv|.style.margin = "0px"; |   
+	45 = TEXT
+    45.stdWrap.field = uid
+    45.stdWrap.noTrimWrap = |newYMASDiv|.style.background = "red"; |  
+	47 = TEXT
+    47.stdWrap.field = uid
+    47.stdWrap.noTrimWrap = |newYMASDiv|.style.border = "2px"; |  	
+	50 = TEXT
+    50.stdWrap.field = uid
+    50.stdWrap.noTrimWrap = |newYMASDiv|.style.color = "white"; |  		
+	### content example
+	50 = TEXT
+    50.stdWrap.field = uid
+    50.stdWrap.noTrimWrap = |newYMASDiv|.innerHTML = |  	
+    51 = TEXT
+    51.stdWrap.field = rowDescription
+    51.stdWrap.noTrimWrap = |"|";| 
+	### create Google AdSense script1 element
+	55 = TEXT
+    55.stdWrap.field = uid
+    55.stdWrap.noTrimWrap = |const newYMASScriptinit| = document.createElement("script"); |	
+	56 = TEXT
+    56.stdWrap.field = uid
+    // yw - performance improvement - defer instead of async
+    56.stdWrap.noTrimWrap = |newYMASScriptinit|.setAttribute('defer', ''); |
+	57 = TEXT
+    57.stdWrap.field = uid
+    57.stdWrap.noTrimWrap = |newYMASScriptinit|.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1961243333521804'; |
+	58 = TEXT
+    58.stdWrap.field = uid
+    58.stdWrap.noTrimWrap = |newYMASScriptinit|.setAttribute('crossorigin', 'anonymous'); |
+	### create Google AdSense comment element
+	60 = TEXT
+    60.stdWrap.field = uid
+    60.stdWrap.noTrimWrap = |const newYMASComment| = document.createComment(' yw_static '); |	
+	### create Google AdSense ins element
+    70 = TEXT
+    70.stdWrap.field = uid
+    70.stdWrap.noTrimWrap = |const newYMASIns| = document.createElement("ins"); |
+	75 = TEXT
+    75.stdWrap.field = uid
+    75.stdWrap.noTrimWrap = |newYMASIns|.setAttribute('class', 'adsbygoogle'); | 	
+	80 = TEXT
+    80.stdWrap.field = uid
+    80.stdWrap.noTrimWrap = |newYMASIns|.setAttribute('style', 'display:block'); | 	
+	85 = TEXT
+    85.stdWrap.field = uid
+    85.stdWrap.noTrimWrap = |newYMASIns|.setAttribute('data-ad-client', 'ca-pub-1961243333521804'); | 	
+	90 = TEXT
+    90.stdWrap.field = uid
+    90.stdWrap.noTrimWrap = |newYMASIns|.setAttribute('data-ad-slot', '9376797180'); | 
+	95 = TEXT
+    95.stdWrap.field = uid
+    95.stdWrap.noTrimWrap = |newYMASIns|.setAttribute('data-ad-format', 'auto'); | 	
+	100 = TEXT
+    100.stdWrap.field = uid
+    100.stdWrap.noTrimWrap = |newYMASIns|.setAttribute('data-full-width-responsive', 'true'); | 
+	### create Google AdSense script2 element
+	110 = TEXT
+    110.stdWrap.field = uid
+    110.stdWrap.noTrimWrap = |const newYMASScript| = document.createElement("script"); |	
+	111 = TEXT
+    111.stdWrap.field = uid
+    111.stdWrap.noTrimWrap = |newYMASScript|.text = |
+	112 = TEXT
+	112.value (
+		'(adsbygoogle = window.adsbygoogle || []).push({});'; 
+		)
+	### add Scriptinit, Comment, Ins and Script element into Div element
+	113 = TEXT
+    113.stdWrap.field = uid
+    113.stdWrap.noTrimWrap = |newYMASDiv||
+	114 = TEXT
+    114.stdWrap.field = uid
+    114.stdWrap.noTrimWrap = |.appendChild(newYMASScriptinit|); | 
+	115 = TEXT
+    115.stdWrap.field = uid
+    115.stdWrap.noTrimWrap = |newYMASDiv||
+	116 = TEXT
+    116.stdWrap.field = uid
+    116.stdWrap.noTrimWrap = |.appendChild(newYMASComment|); | 
+	120 = TEXT
+    120.stdWrap.field = uid
+    120.stdWrap.noTrimWrap = |newYMASDiv||
+	121 = TEXT
+    121.stdWrap.field = uid
+    121.stdWrap.noTrimWrap = |.appendChild(newYMASIns|); | 
+	125 = TEXT
+    125.stdWrap.field = uid
+    125.stdWrap.noTrimWrap = |newYMASDiv||
+	126 = TEXT
+    126.stdWrap.field = uid
+    126.stdWrap.noTrimWrap = |.appendChild(newYMASScript|); | 	
+	### add the newly created element and its content into the DOM
+	150 = TEXT
+    150.stdWrap.field = uid
+    150.stdWrap.noTrimWrap = |document.getElementById("c1").appendChild(newYMASDiv|); | 
+	#55 = TEXT
+    #55.stdWrap.field = uid
+    #55.stdWrap.noTrimWrap = |const lastYMASdiv = document.getElementById("c1"); document.body.insertBefore(newYMASDiv|, lastYMASdiv)| 
+
+  }
+  wrap = document.body.onload = addYMASElement; function addYMASElement() {|};
+}
+### lib.ym_viewer_advertisement_static_gif
+@import 'EXT:yw_contextmap/Configuration/TypoScript/ymas-gif/setup.typoscript'
+    
+####   lib.ym_viewer_advertisement_static_adcash  
+####   lib.ym_viewer_advertisement_static_adnow  
+lib.ym_modalmenu = TEXT
+lib.ym_modalmenu.value (
+  
+    function modalmenu(colpos){
+    	//const colpos = "0";
+        if (typeof ymtouchelementId === 'undefined') {
+        } else {
+        ymclickelementId = undefined; 
+        delete(ymclickelementId); 
+        var overlayId = ymtouchelementId;
+        };
+        if (typeof ymclickelementId === 'undefined') {
+        } else {
+        var overlayId = ymclickelementId;
+        };
+        const slug = overlayId;  
+  	const href = window.location.href;
+	const entryPointString  = href.split('/').pop();  
+	const entryPoint  = entryPointString.slice(0, 5);
+    const getUrl = entryPoint + "/" + slug + "/?type=990&colpos=" + colpos;
+        fetch(getUrl, {method: 'GET',}).then((res) => res.text()).then((res) => {
+        const parser = new DOMParser();
+        const htmlDoc = parser.parseFromString(res, 'text/html');
+        const modalBody = document.querySelector('.modal#modal-436 .modal-body');
+        //const modalHeader = document.querySelector('.modal .modal-header');
+        modalBody.innerHTML = '';
+        modalBody.appendChild(htmlDoc.querySelector('.pageContent'));
+        /////
+        // Enable Shop Context Modal plugin
+        /////
+		var shopContext = modalBody.querySelector('.shopContext');
+		//console.log(shopContext);
+		if (shopContext) {
+                       	if(modalBody.querySelector('#quantity')){
+                            const defaultQuantity = modalBody.querySelector('#quantity').value;
+							let actionForm = modalBody.querySelectorAll('.ymshop-page-qty');
+							if (actionForm) {
+								formFunctionality(actionForm);
+							}                    
+                            const allArticles = document.querySelectorAll('.ymPageShopModalCard');
+                            const articleDefaultAmount = [];
+                            allArticles.forEach((article) => {
+                                if(article.classList.contains('article-active')){
+                                    articleDefaultAmount.push(article.querySelector('.standardAmount').innerHTML);
+                                }
+                            });
+                            updatedArticleAmount(defaultQuantity,articleDefaultAmount);
+                        }
+                        };
+						// Add following functions from shopContext.js as minified JS to make them available in the modal:
+						// function formFunctionality(actionForm), function updatingQuantity(type, quantityInput, btn, defaultQuantity = 0), function updatedArticleAmount(defaultQuantity, articleDefaultAmount, container = document), function updateJsonData(jsonData, targetString, action, oldString = null)
+                        function formFunctionality(e){for(let t=0;t<e.length;t++){let a=0;e[t].querySelector(".ymshop-cate-qty__plus").addEventListener("click",(e=>{e.preventDefault(),updatingQuantity("plus",e.target.closest(".ymshop-page-qty").querySelector(".quantity"),e,a),e.target.closest(".ymshop-cate-reset__qty").querySelector("#updateArticles").click()})),e[t].querySelector(".ymshop-cate-qty__minus").addEventListener("click",(e=>{e.preventDefault(),updatingQuantity("minus",e.target.closest(".ymshop-page-qty").querySelector(".quantity"),e),e.target.closest(".ymshop-cate-reset__qty").querySelector("#updateArticles").click()}))}}function updatingQuantity(e,t,a,s=0){if(t&&"plus"===e){let e=t.value,s=a.target.closest(".ymshop-page-qty").querySelector(".ymshop-cate-qty__minus");a.target.closest(".ymshop-page-qty").querySelector(".ymshop-cate-qty__plus");e>=0?(s.classList.contains("disabledButtons")&&s.classList.remove("disabledButtons"),e++):e=1,t.value=e}if(t&&"minus"===e){let e=t.value,n=a.target.closest(".ymshop-page-qty").querySelector(".ymshop-cate-qty__minus"),r=a.target.closest(".ymshop-page-qty").querySelector(".ymshop-cate-qty__plus");e>=1?(n.classList.contains("disabledButtons")&&n.classList.remove("disabledButtons"),e!=s&&r.classList.remove("disabledButtons"),e--):(n.classList.contains("disabledButtons")||n.classList.add("disabledButtons"),e=1),t.value=e}}function updatedArticleAmount(e,t,a=document){const s=a.querySelector(".updationDiv #updateArticles"),n=a.querySelector(".quantity-error");let r=a.querySelectorAll(".ymPageShopModalCard");r.forEach(((s,n)=>{s.addEventListener("click",(()=>{let r=s.querySelector(".ymshop-card__content .unit").textContent.replace(/[\[\]]/g,""),i=s.querySelector(".ymshop-card__content .standardAmount").textContent,o=s.querySelector(".ymshop-card__content div").textContent,l=a.querySelector("#shopContextData").textContent.trim(),c=i+" "+r+" "+o;if(s.classList.contains("article-active"))s.classList.add("article-disable"),l=updateJsonData(l,c,"remove"),s.classList.remove("article-active");else{l=updateJsonData(l,c,"add"),s.classList.add("article-active"),s.classList.contains("article-disable")&&s.classList.remove("article-disable");let r=a.querySelector(".updationDiv .quantity").value,i=t[n]/e*r;s.querySelector(".standardAmount").innerHTML=parseFloat(i.toFixed(2))}a.querySelector("#shopContextData").innerHTML=l}))})),s.addEventListener("click",(()=>{const s=document.querySelector(".updationDiv .quantity").value.trim();!s.match(/^\d+$/)||parseInt(s)<=0?(n.style.display="block",n.style.maxWidth="fit-content",n.textContent="Value must be integer and grater than O"):(n.style.display="none",r.forEach(((s,n)=>{let r=s.querySelector(".ymshop-card__content .unit").textContent.replace(/[\[\]]/g,""),i=s.querySelector(".ymshop-card__content div").textContent,o=a.querySelector("#shopContextData").textContent.trim(),l=s.querySelector(".ymshop-card__content .standardAmount").textContent+" "+r+" "+i;if(s.classList.contains("article-active")){let c=a.querySelector(".updationDiv .quantity").value,d=t[n]/e*c;o=updateJsonData(o,parseFloat(d.toFixed(2))+" "+r+" "+i,"replace",l),s.querySelector(".standardAmount").innerHTML=parseFloat(d.toFixed(2))}if(s.classList.contains("article-disable")){s.classList.remove("article-disable"),s.classList.add("article-active");let l=a.querySelector(".updationDiv .quantity").value,c=t[n]/e*l;o=updateJsonData(o,parseFloat(c.toFixed(2))+" "+r+" "+i,"add"),s.querySelector(".standardAmount").innerHTML=parseFloat(c.toFixed(2)),s.classList.contains("article-disable")?s.parentNode.appendChild(s):s.parentNode.insertBefore(s,s.parentNode.firstChild)}a.querySelector("#shopContextData").innerHTML=o})))}))}function updateJsonData(e,t,a,s=null){if(!e||"undefined"===e)return document.getElementById("shopContextData").innerHTML||"";/<script[^>]*>[\s\S]*?<\/script>/gi.test(e)&&(e=e.replace(/<script[^>]*>|<\/script>/gi,""));try{let n=JSON.parse(e);if("remove"===a){let e=n.recipeIngredient.indexOf(t);-1!==e&&n.recipeIngredient.splice(e,1)}else if("add"===a)n.recipeIngredient.includes(t)||n.recipeIngredient.unshift(t);else if("replace"===a){let e=n.recipeIngredient.indexOf(s);-1!==e&&null!==s&&(n.recipeIngredient[e]=t)}return`<script type="application/ld+json">\n${JSON.stringify(n,null,2)}\n<\/script>`}catch(e){return console.log("Error parsing JSON:",e),document.getElementById("shopContextData").innerHTML||""}}; 
+	
+    // End Enable Shop Context Plugin
+                         
+    // Enable Swiper container
+    const initializedSwiper = document.querySelector('.contextSwiper');
+    if(initializedSwiper){
+        loadSwiper(initializedSwiper);
+    };       
+                                  
+		///////
+		// Enable pw_comments extension integration in overlay modal
+		///////
+		   //var pwCommentsForm = document.querySelector('.pageContent form');
+  			var pwCommentsForm = document.querySelector('.pageContent .tx-pwcomment-pi1 form[name="newComment"]');
+    //console.log(pwCommentsForm);
+    //const formID = pwCommentsForm.getAttribute('id');
+	if (pwCommentsForm) {
+    pwCommentsForm.addEventListener("submit",(event) => {
+        const formData = new FormData(pwCommentsForm); 
+
+        const submitButton = document.querySelector('[type=submit]');
+      
+        const currentPageName = submitButton.getAttribute('name');
+        const currentPage = submitButton.getAttribute('value');
+      
+        formData.append(currentPageName,currentPage);
+        const request = new XMLHttpRequest();
+        let action = pwCommentsForm.getAttribute('action'); 
+        
+        request.open("POST", action, true);
+        
+        request.onreadystatechange = function() {
+          if (request.readyState == XMLHttpRequest.DONE) {
+            const response = request.responseText;
+            const htmlRes = parser.parseFromString(response, 'text/html');
+            
+            const typo3FormResponse =  htmlRes.querySelector('#modal-436 .pageContent');
+            if (typo3FormResponse) {
+              document.querySelector('.pageContent').innerHTML = '';
+              document.querySelector('.pageContent').appendChild(typo3FormResponse);
+            } else {
+              document.querySelector('.tx-pwcomment-pi1 form').innerHTML = '';
+              const formResponse =  htmlRes.querySelector('.tx-pwcomment-pi1 .typo3-messages');
+              document.querySelector('.pageContent').appendChild(formResponse);
+            }
+          }
+      };
+    
+        request.send(formData);
+        event.preventDefault();
+      },
+      false);
+	// Close custom form if condition 
+	};
+  
+     // close fetch(getUrl)
+        });  
+    };
+)    
+
+
+    
+
+############################################################
+# YW Context Map plugin setup (appended by builder)
+plugin.tx_ywcontextmap {
+  view {
+    templateRootPaths.10 = EXT:yw_contextmap/Resources/Private/Templates/
+    partialRootPaths.10 = EXT:yw_contextmap/Resources/Private/Partials/
+    layoutRootPaths.10 = EXT:yw_contextmap/Resources/Private/Layouts/
+  }
+}

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<T3DataStructure>
+  <sheets>
+    <sDEF>
+      <ROOT>
+        <TCEforms>
+          <sheetTitle>Plugin Settings</sheetTitle>
+        </TCEforms>
+        <type>array</type>
+        <el>
+          <registerJs>
+            <TCEforms>
+              <label>Register core JS files automatically</label>
+              <config>
+                <type>check</type>
+                <default>1</default>
+              </config>
+            </TCEforms>
+          </registerJs>
+	<settings.tileSource>
+	  <TCEforms>
+	    <label>Primary DZI tileSource (plugin override)</label>
+	    <config>
+	      <type>input</type>
+	      <eval>trim</eval>
+	      <default></default>
+	    </config>
+	  </TCEforms>
+	</settings.tileSource>
+
+	<settings.tileOpacity>
+	  <TCEforms>
+	    <label>Tile opacity (0..1)</label>
+	    <config>
+	      <type>input</type>
+	      <eval>trim</eval>
+	      <default>1</default>
+	    </config>
+	  </TCEforms>
+	</settings.tileOpacity>
+
+	<settings.viewer.style>
+	  <TCEforms>
+	    <label>Viewer inline style</label>
+	    <config>
+	      <type>input</type>
+	      <eval>trim</eval>
+	      <default>width: 100%; height: 100vh; background-color:#7ebbff;</default>
+	    </config>
+	  </TCEforms>
+	</settings.viewer.style>
+
+          <js.ymOsHref>
+            <TCEforms>
+              <label>Path to ym-os-href.min.js</label>
+              <config>
+                <type>input</type>
+                <eval>trim</eval>
+                <default>EXT:yw_contextmap/Resources/Public/JavaScript/os/ym-os-href.min.js</default>
+              </config>
+            </TCEforms>
+          </js.ymOsHref>
+          <js.ymOsBookmark>
+            <TCEforms>
+              <label>Path to ym-os-bookmark-url.min.js</label>
+              <config>
+                <type>input</type>
+                <eval>trim</eval>
+                <default>EXT:yw_contextmap/Resources/Public/JavaScript/os-url/ym-os-bookmark-url.min.js</default>
+              </config>
+            </TCEforms>
+          </js.ymOsBookmark>
+          <js.pieCmImages>
+            <TCEforms>
+              <label>Path to pie-cm-images.min.js</label>
+              <config>
+                <type>input</type>
+                <eval>trim</eval>
+                <default>EXT:yw_contextmap/Resources/Public/JavaScript/pie-context-menu/pie-cm-images.min.js</default>
+              </config>
+            </TCEforms>
+          </js.pieCmImages>
+          <js.ymOsHtmlOverlay>
+            <TCEforms>
+              <label>Path to ym_os-html-overlay.min.js</label>
+              <config>
+                <type>input</type>
+                <eval>trim</eval>
+                <default>EXT:yw_contextmap/Resources/Public/JavaScript/os-over/ym_os-html-overlay.min.js</default>
+              </config>
+            </TCEforms>
+          </js.ymOsHtmlOverlay>
+        </el>
+      </ROOT>
+    </sDEF>
+  </sheets>
+</T3DataStructure>

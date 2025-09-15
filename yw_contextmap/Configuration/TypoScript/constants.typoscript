@@ -1,0 +1,15 @@
+plugin.tx_ywcontextmap {
+  settings {
+    registerJs = 1
+    js {
+      ymOsHref = EXT:yw_contextmap/Resources/Public/JavaScript/os/ym-os-href.min.js
+      ymOsBookmark = EXT:yw_contextmap/Resources/Public/JavaScript/os-url/ym-os-bookmark-url.min.js
+      pieCmImages = EXT:yw_contextmap/Resources/Public/JavaScript/pie-context-menu/pie-cm-images.min.js
+      ymOsHtmlOverlay = EXT:yw_contextmap/Resources/Public/JavaScript/os-over/ym_os-html-overlay.min.js
+    }
+  }
+}
+plugin.tx_ywcontextmap.settings.viewer.style = width: 100%; height: 100vh; background-color:#7ebbff;
+plugin.tx_ywcontextmap.settings.tileSource =
+plugin.tx_ywcontextmap.settings.tileOpacity = 1
+

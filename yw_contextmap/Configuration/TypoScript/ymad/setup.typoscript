@@ -1,0 +1,95 @@
+lib.ym_viewer_advertisement_dyn = CONTENT
+lib.ym_viewer_advertisement_dyn {
+    table = pages
+  select {
+    orderBy = title
+    pidInList = 251
+    recursive = 10
+    # uid - id, title - element, subtitle - type (img, iframe, div), nav_title - a - x, b - y, c - width, d - height
+    selectFields = uid, title, subtitle, nav_title,rowDescription, abstract, yw_a, yw_b, yw_c, yw_d
+    where = title LIKE '%ymad-%'
+  }
+  renderObj = COA
+  renderObj {
+    # only renders, if rowDescription is filled - empty overlays are not shown
+        stdWrap.if.isTrue.data = field:yw_d
+    #stdWrap.if.equals = div/img
+        #stdWrap.if.value.data = field:subtitle
+    5 = TEXT
+    5.stdWrap.field = uid
+    5.stdWrap.noTrimWrap = |var ymad| = document.createElement|
+    7 = TEXT
+    7.stdWrap.field = subtitle
+    7.stdWrap.noTrimWrap = |('|');|
+    10 = TEXT
+    10.stdWrap.field = uid
+    10.stdWrap.noTrimWrap = |ymad|.src = |
+    12 = TEXT
+    12.stdWrap.field = nav_title
+    12.stdWrap.noTrimWrap = |'|';|
+    13 = TEXT
+    13.stdWrap.field = uid
+    13.stdWrap.noTrimWrap = |ymad|.alt = |
+    14 = TEXT
+    14.stdWrap.field = abstract
+    14.stdWrap.noTrimWrap = |'|';|
+    15 = TEXT
+    15.stdWrap.field = uid
+    15.stdWrap.noTrimWrap = |ymad|.style.objectFit = 'contain';|
+    17 = TEXT
+    17.stdWrap.field = uid
+    17.stdWrap.noTrimWrap = |ymad|.className = "ymad lazy";|
+    20 = TEXT
+    20.stdWrap.field = uid
+    20.stdWrap.noTrimWrap = |ymad|.id = |
+    23 = TEXT
+    23.stdWrap.field = uid
+    23.stdWrap.noTrimWrap = |'ymad|';|
+    25 = TEXT
+    25.stdWrap.field = uid
+    25.stdWrap.noTrimWrap = |ymad|.style.position = 'absolute';|
+
+    27 = TEXT
+    27.stdWrap.field = uid
+    27.stdWrap.noTrimWrap = |ymad|.style.left = |
+    30 = TEXT
+    30.stdWrap.field = yw_a
+    30.stdWrap.noTrimWrap = |'|';|
+
+    33 = TEXT
+    33.stdWrap.field = uid
+    33.stdWrap.noTrimWrap = |ymad|.style.top = |
+    35 = TEXT
+    35.stdWrap.field = yw_b
+    35.stdWrap.noTrimWrap = |'|';|
+
+    36 = TEXT
+    36.stdWrap.field = uid
+    36.stdWrap.noTrimWrap = |ymad|.style.width = |
+    37 = TEXT
+    37.stdWrap.field = yw_c
+    37.stdWrap.noTrimWrap = |'|';|
+
+    40 = TEXT
+    40.stdWrap.field = uid
+    40.stdWrap.noTrimWrap = |ymad|.style.height = |
+    43 = TEXT
+    43.stdWrap.field = yw_d
+    43.stdWrap.noTrimWrap = |'|';|
+
+    ### content example
+    45 = TEXT
+    45.stdWrap.field = uid
+    45.stdWrap.noTrimWrap = |ymad|.innerHTML = |
+    46 = TEXT
+    46.stdWrap.field = rowDescription
+    46.stdWrap.noTrimWrap = |"|";|
+
+
+    50 = TEXT
+    50.stdWrap.field = uid
+    50.stdWrap.noTrimWrap = |ymadoverlay.element().appendChild(ymad|);|
+  }
+  wrap = var ymadoverlay = viewer.htmlOverlay({scale: 10000});|
+}
+
