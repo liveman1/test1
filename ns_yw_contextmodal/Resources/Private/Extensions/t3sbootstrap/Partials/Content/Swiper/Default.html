@@ -282,43 +282,10 @@
     <div id="swiper-{data.uid}" class="swiper {class}"{styleAttr -> f:format.raw()}>
 	<div class="swiper-wrapper gallery">
 	  <f:for each="{col_300}" as="card">
-	    <f:if condition="{card.header} || {card.subheader} || {card.bodytext} || {swiperSlides.{card.uid}.0}">
-	      <!-- ORIGINAL rendering for standard BS Carousel “card” children -->
-	      <div class="swiper-slide">
-	        <div class="card rounded-0 h-100">
-	          <f:if condition="{swiperSlides.{card.uid} -> f:count()}">
-	            <f:if condition="{zoom}">
-	              <f:then>
-	                <ce:link.clickEnlarge image="{swiperSlides.{card.uid}.0}" configuration="{settings.media.popup}">
-	                  <f:render section="Image"
-	                    arguments="{ratio: '{ratio}', file: '{swiperSlides.{card.uid}.0}', width: '{width}', swiper: 'true', origImage: '{origImage}'}" />
-	                </ce:link.clickEnlarge>
-	              </f:then>
-	              <f:else>
-	                <f:link.typolink parameter="{card.file.properties.link}" class="card-imglink">
-	                  <f:render section="Image"
-	                    arguments="{ratio: '{ratio}', file: '{swiperSlides.{card.uid}.0}', width: '{width}', swiper: 'true', origImage: '{origImage}'}" />
-	                </f:link.typolink>
-	              </f:else>
-	            </f:if>
-	          </f:if>
-
-	          <f:if condition="{card.header} || {card.subheader} || {card.bodytext}">
-	            <div class="card-body{card.header_position}">
-	              <f:render section="CardTitle" arguments="{_all}" />
-	              {card.bodytext -> f:format.html()}
-	            </div>
-	          </f:if>
-	        </div>
-	      </div>
-
-	    <f:else>
 	      <!-- Fallback: non-“card” children (e.g. YW BS Carousel) render their own slides -->
       <!-- ELSE: call our slides-only object -->
       <!-- calling lib.yw_bscarousel_slidesOnly with uid={card.uid} -->
 	      <f:cObject typoscriptObjectPath="lib.yw_bscarousel_slidesOnly" data="{uid: card.uid}" />
-	    </f:else>
-	    </f:if>
 	  </f:for>
 	</div>
 
@@ -399,38 +366,9 @@
   <div id="swiper-{data.uid}" data-swiperclass="{data.tx_t3sbootstrap_extra_class}" data-pagination="{pagination}" data-navigation="{navigation}" data-spv="{slidesPerView}" data-spb="{spaceBetween}" data-spg="{slidesPerGroup}" data-del="{delay}" data-b576="{breakpoints576}" data-b768="{breakpoints768}" data-b992="{breakpoints992}" data-lop="{loop}" data-suid="{data.uid}" class="swiper {class}"{styleAttr -> f:format.raw()}>
     <div class="swiper-wrapper gallery" style="width:20%; height: fit-content;">
       <f:for each="{col_300}" as="card">
-        <f:if condition="{card.header} || {card.subheader} || {card.bodytext} || {swiperSlides.{card.uid}.0}">
-          <!-- standard card rendering (unchanged) -->
-          <div class="swiper-slide" style="width:20% !important;height:100%;">
-            <div class="card rounded-0 h-100">
-              <f:if condition="{swiperSlides.{card.uid} -> f:count()}">
-                <f:if condition="{zoom}">
-                  <f:then>
-                    <ce:link.clickEnlarge image="{swiperSlides.{card.uid}.0}" configuration="{settings.media.popup}">
-                      <f:render section="Image" arguments="{ratio:'{ratio}', file:'{swiperSlides.{card.uid}.0}', width:'{width}', swiper:'true', origImage:'{origImage}'}" />
-                    </ce:link.clickEnlarge>
-                  </f:then>
-                  <f:else>
-                    <f:link.typolink parameter="{card.file.properties.link}" class="card-imglink">
-                      <f:render section="Image" arguments="{ratio:'{ratio}', file:'{swiperSlides.{card.uid}.0}', width:'{width}', swiper:'true', origImage:'{origImage}'}" />
-                    </f:link.typolink>
-                  </f:else>
-                </f:if>
-              </f:if>
-              <f:if condition="{card.header} || {card.subheader} || {card.bodytext}">
-                <div class="card-body{card.header_position}">
-                  <f:render section="CardTitle" arguments="{_all}" />
-                  {card.bodytext -> f:format.html()}
-                </div>
-              </f:if>
-            </div>
-          </div>
-        <f:else>
           <!-- YW fallback: child CE (yw_bscarousel) renders its own .swiper-slide items -->
 <!-- YW fallback will render slides for child uid:{card.uid} -->
           <f:cObject typoscriptObjectPath="lib.yw_bscarousel_slidesOnly" data="{uid: card.uid}" />
-        </f:else>
-        </f:if>
       </f:for>
     </div>
 
